@@ -11,15 +11,17 @@ type game struct {
 	wallGui       *guiWall
 }
 
-func CreateGame(r, c, winWidth, winHeight int) *game {
-	g := api.CreateGame(r, c)
+func CreateGame(gamePlaygroundGridRows, gamePlaygroundGridColumns int,
+	gameWindowWidth, gameWindowHeight int,
+	gameWallOffsetX, gameWallOffsetY int) *game {
+	g := api.CreateGame(gamePlaygroundGridRows, gamePlaygroundGridColumns)
 	return &game{
-		width:   winWidth,
-		height:  winHeight,
+		width:   gameWindowWidth,
+		height:  gameWindowHeight,
 		gameApi: g,
 		wallGui: &guiWall{
-			offsetX: 40,
-			offsetY: 40,
+			offsetX: gameWallOffsetX,
+			offsetY: gameWallOffsetY,
 			gameApi: g,
 		},
 	}
