@@ -13,7 +13,7 @@ type tetromino struct {
 	gridRows, gridColumns int
 }
 
-func CreateTetromino(bottom, right int) *tetromino {
+func CreateTetromino(playgroundGridRows, playgroundGridColumns int) *tetromino {
 	return &tetromino{
 		coord: tetrominoCoord{
 			s1: coord{
@@ -33,8 +33,8 @@ func CreateTetromino(bottom, right int) *tetromino {
 				Y: -1,
 			},
 		},
-		gridRows:    bottom,
-		gridColumns: right,
+		gridRows:    playgroundGridRows,
+		gridColumns: playgroundGridColumns,
 	}
 }
 

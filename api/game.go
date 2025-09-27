@@ -1,12 +1,15 @@
 package api
 
 type Game struct {
-	wall       *Wall
-	playground *Playground
+	gridWidth, gridHeight int
+	wall                  *Wall
+	playground            *Playground
 }
 
 func CreateGame(r, c int) *Game {
 	return &Game{
+		gridHeight: r,
+		gridWidth:  c,
 		wall: &Wall{
 			height: r + 2,
 			width:  c + 2,
