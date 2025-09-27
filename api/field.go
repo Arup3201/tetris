@@ -1,21 +1,21 @@
 package api
 
-type field struct {
+type Field struct {
 	grid [][]int
 }
 
-func CreateField(r, c int) *field {
+func CreateField(r, c int) *Field {
 	field2D := make([][]int, r)
 	for i := range r {
 		field2D[i] = make([]int, c)
 	}
 
-	return &field{
+	return &Field{
 		grid: field2D,
 	}
 }
 
-func (f *field) SetGround(tetrominoCoordinates []tetrominoCoord) {
+func (f *Field) SetGround(tetrominoCoordinates []tetrominoCoord) {
 	for _, tCoord := range tetrominoCoordinates {
 		f.grid[tCoord.s1.Y][tCoord.s1.X] = 1
 		f.grid[tCoord.s2.Y][tCoord.s2.X] = 1
