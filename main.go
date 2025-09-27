@@ -9,9 +9,9 @@ import (
 func main() {
 	gridRows, gridCols := 20, 10
 	windowWidth, windowHeight := 640, 480
-	game := gui.CreateGame(gridRows, gridCols)
+	game := gui.CreateGame(gridRows, gridCols, windowWidth, windowHeight)
 
-	if err := game.Run(windowWidth, windowHeight, "Tetris"); err != nil {
+	if err := game.Run("Tetris"); err != nil {
 		log.Fatal(err)
 	}
 }

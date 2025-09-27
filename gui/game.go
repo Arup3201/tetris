@@ -6,15 +6,20 @@ import (
 )
 
 type game struct {
-	gameApi *api.Game
-	wallGui *guiWall
+	width, height int
+	gameApi       *api.Game
+	wallGui       *guiWall
 }
 
-func CreateGame(r, c int) *game {
+func CreateGame(r, c, winWidth, winHeight int) *game {
 	g := api.CreateGame(r, c)
 	return &game{
+		width:   winWidth,
+		height:  winHeight,
 		gameApi: g,
 		wallGui: &guiWall{
+			offsetX: 40,
+			offsetY: 40,
 			gameApi: g,
 		},
 	}
@@ -25,15 +30,15 @@ func (g *game) Update() error {
 }
 
 func (g *game) Draw(screen *ebiten.Image) {
-	g.wallGui.draw(screen)
+	g.wallGui.Draw(screen)
 }
 
 func (g *game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return 640, 480
+	return g.width, g.height
 }
 
-func (g *game) Run(width, height int, title string) error {
-	ebiten.SetWindowSize(width, height)
+func (g *game) Run(title string) error {
+	ebiten.SetWindowSize(g.width, g.height)
 	ebiten.SetWindowTitle(title)
 	return ebiten.RunGame(g)
 }
