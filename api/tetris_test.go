@@ -19,6 +19,7 @@ func TestWallBorder(t *testing.T) {
 	rows, colums := 4, 4
 
 	game := CreateGame(rows, colums)
+	border := game.GetWall()
 
 	expected := []coord{
 		{
@@ -102,7 +103,6 @@ func TestWallBorder(t *testing.T) {
 			Y: 5,
 		},
 	}
-	border := game.wall.GetBorder()
 	assert.Equal(t, expected, border)
 }
 

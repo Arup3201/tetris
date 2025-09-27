@@ -4,6 +4,7 @@ import (
 	"image"
 	_ "image/png"
 
+	"github.com/Arup3201/tetris/api"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -28,50 +29,19 @@ func mustLoadImage(name string) *ebiten.Image {
 	return ebiten.NewImageFromImage(img)
 }
 
-type wall struct {
-	offsetX, offsetY int
-	width, height    int
+type guiWall struct {
+	gameApi *api.Game
 }
 
-func (w *wall) draw(screen *ebiten.Image) {
+func (w *guiWall) draw(screen *ebiten.Image) {
 	newTileX, newTileY := 0, 0
 	op := &ebiten.DrawImageOptions{}
 
-	// top
-	for range w.width {
+	border := w.gameApi.GetWall()
+	for _, coord := range border {
+		newTileX, newTileY = coord.X*tileWidth, coord.Y*tileHeight
 		op.GeoM.Translate(float64(newTileX), float64(newTileY))
 		screen.DrawImage(tileSprite, op)
 		op.GeoM.Translate(-float64(newTileX), -float64(newTileY)) // revert relative position
-		newTileX += w.offsetX + tileWidth
-	}
-
-	// left - avoid rewrite top-left tile
-	newTileX = 0
-	newTileY += tileHeight
-	for range w.height - 1 {
-		op.GeoM.Translate(float64(newTileX), float64(newTileY))
-		screen.DrawImage(tileSprite, op)
-		op.GeoM.Translate(-float64(newTileX), -float64(newTileY)) // revert relative position
-		newTileY += w.offsetY + tileHeight
-	}
-
-	// right - avoid rewrite top-right tile
-	newTileX = (w.width - 1) * tileWidth
-	newTileY = tileHeight
-	for range w.height - 1 {
-		op.GeoM.Translate(float64(newTileX), float64(newTileY))
-		screen.DrawImage(tileSprite, op)
-		op.GeoM.Translate(-float64(newTileX), -float64(newTileY)) // revert relative position
-		newTileY += w.offsetY + tileHeight
-	}
-
-	// bottom - avoid bottom-left and bottom-right tile
-	newTileX = tileWidth
-	newTileY = (w.height - 1) * tileHeight
-	for range w.width - 2 {
-		op.GeoM.Translate(float64(newTileX), float64(newTileY))
-		screen.DrawImage(tileSprite, op)
-		op.GeoM.Translate(-float64(newTileX), -float64(newTileY)) // revert relative position
-		newTileX += w.offsetX + tileWidth
 	}
 }

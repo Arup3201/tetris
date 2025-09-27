@@ -1,21 +1,21 @@
 package gui
 
 import (
+	"github.com/Arup3201/tetris/api"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type game struct {
-	rows, columns int
-	gameWall      *wall
+	gameApi *api.Game
+	wallGui *guiWall
 }
 
 func CreateGame(r, c int) *game {
+	g := api.CreateGame(r, c)
 	return &game{
-		rows:    r,
-		columns: c,
-		gameWall: &wall{
-			width:  c + 2,
-			height: r + 2,
+		gameApi: g,
+		wallGui: &guiWall{
+			gameApi: g,
 		},
 	}
 }
@@ -25,7 +25,7 @@ func (g *game) Update() error {
 }
 
 func (g *game) Draw(screen *ebiten.Image) {
-	g.gameWall.draw(screen)
+	g.wallGui.draw(screen)
 }
 
 func (g *game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {

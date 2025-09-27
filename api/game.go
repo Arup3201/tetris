@@ -14,3 +14,7 @@ func CreateGame(r, c int) *Game {
 		playground: CreatePlayground(r, c),
 	}
 }
+
+func (g *Game) GetWall() []coord {
+	return g.wall.GetBorder()
+}
