@@ -5,7 +5,7 @@ type coord struct {
 }
 
 type tetrominoCoord struct {
-	S1, S2, S3, S4 coord
+	s1, s2, s3, s4 coord
 }
 
 type tetromino struct {
@@ -16,19 +16,19 @@ type tetromino struct {
 func CreateTetromino(bottom, right int) *tetromino {
 	return &tetromino{
 		coord: tetrominoCoord{
-			S1: coord{
+			s1: coord{
 				X: -1,
 				Y: -1,
 			},
-			S2: coord{
+			s2: coord{
 				X: -1,
 				Y: -1,
 			},
-			S3: coord{
+			s3: coord{
 				X: -1,
 				Y: -1,
 			},
-			S4: coord{
+			s4: coord{
 				X: -1,
 				Y: -1,
 			},
@@ -39,34 +39,34 @@ func CreateTetromino(bottom, right int) *tetromino {
 }
 
 func (t *tetromino) EnterField() {
-	t.coord.S1.X = t.gridColumns/2 - 1
-	t.coord.S1.Y = 0
-	t.coord.S2.X = t.gridColumns / 2
-	t.coord.S2.Y = 0
+	t.coord.s1.X = t.gridColumns/2 - 1
+	t.coord.s1.Y = 0
+	t.coord.s2.X = t.gridColumns / 2
+	t.coord.s2.Y = 0
 }
 
 func (t *tetromino) GetPosition() []coord {
-	return []coord{t.coord.S1, t.coord.S2, t.coord.S3, t.coord.S4}
+	return []coord{t.coord.s1, t.coord.s2, t.coord.s3, t.coord.s4}
 }
 
 func (t *tetromino) GoDown(fieldGrid [][]int, by int) {
 	lastPossibleY := t.gridRows - 1
 	for r := range t.gridRows {
-		if fieldGrid[r][t.coord.S1.X] == 1 || fieldGrid[r][t.coord.S2.X] == 1 {
+		if fieldGrid[r][t.coord.s1.X] == 1 || fieldGrid[r][t.coord.s2.X] == 1 {
 			lastPossibleY = r - 1
 			break
 		}
 	}
 
-	t.coord.S1.Y = min(t.coord.S1.Y+by, lastPossibleY)
-	t.coord.S2.Y = min(t.coord.S2.Y+by, lastPossibleY)
+	t.coord.s1.Y = min(t.coord.s1.Y+by, lastPossibleY)
+	t.coord.s2.Y = min(t.coord.s2.Y+by, lastPossibleY)
 
-	if t.coord.S3.X == -1 && t.coord.S3.Y == -1 {
-		t.coord.S3.X = t.coord.S2.X
-		t.coord.S3.Y = t.coord.S2.Y - 1
+	if t.coord.s3.X == -1 && t.coord.s3.Y == -1 {
+		t.coord.s3.X = t.coord.s2.X
+		t.coord.s3.Y = t.coord.s2.Y - 1
 	}
-	if t.coord.S4.X == -1 && t.coord.S4.Y == -1 {
-		t.coord.S4.X = t.coord.S1.X
-		t.coord.S4.Y = t.coord.S1.Y - 1
+	if t.coord.s4.X == -1 && t.coord.s4.Y == -1 {
+		t.coord.s4.X = t.coord.s1.X
+		t.coord.s4.Y = t.coord.s1.Y - 1
 	}
 }

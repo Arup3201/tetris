@@ -17,9 +17,9 @@ func CreateField(r, c int) *field {
 
 func (f *field) SetGround(tetrominoCoordinates []tetrominoCoord) {
 	for _, tCoord := range tetrominoCoordinates {
-		f.grid[tCoord.S1.Y][tCoord.S1.X] = 1
-		f.grid[tCoord.S2.Y][tCoord.S2.X] = 1
-		f.grid[tCoord.S3.Y][tCoord.S3.X] = 1
-		f.grid[tCoord.S4.Y][tCoord.S4.X] = 1
+		f.grid[tCoord.s1.Y][tCoord.s1.X] = 1
+		f.grid[tCoord.s2.Y][tCoord.s2.X] = 1
+		f.grid[tCoord.s3.Y][tCoord.s3.X] = 1
+		f.grid[tCoord.s4.Y][tCoord.s4.X] = 1
 	}
 }

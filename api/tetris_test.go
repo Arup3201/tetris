@@ -85,19 +85,19 @@ func TestTetrominoHitAnotherTetromino(t *testing.T) {
 	field := CreateField(rows, columns)
 	field.SetGround([]tetrominoCoord{
 		{
-			S1: coord{
+			s1: coord{
 				X: 4,
 				Y: 19,
 			},
-			S2: coord{
+			s2: coord{
 				X: 5,
 				Y: 19,
 			},
-			S3: coord{
+			s3: coord{
 				X: 5,
 				Y: 18,
 			},
-			S4: coord{
+			s4: coord{
 				X: 4,
 				Y: 18,
 			},
