@@ -6,13 +6,104 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestBlankField(t *testing.T) {
+func TestGamePlayground(t *testing.T) {
 	rows, columns := 20, 10
 
-	field := CreateField(rows, columns)
+	game := CreateGame(rows, columns)
 
-	assert.Equal(t, 0, field.grid[0][0])
-	assert.Equal(t, 0, field.grid[rows-1][columns-1])
+	assert.Equal(t, 0, game.playground.grid[0][0])
+	assert.Equal(t, 0, game.playground.grid[rows-1][columns-1])
+}
+
+func TestWallBorder(t *testing.T) {
+	rows, colums := 4, 4
+
+	game := CreateGame(rows, colums)
+
+	expected := []coord{
+		{
+			X: 0,
+			Y: 0,
+		},
+		{
+			X: 1,
+			Y: 0,
+		},
+		{
+			X: 2,
+			Y: 0,
+		},
+		{
+			X: 3,
+			Y: 0,
+		},
+		{
+			X: 4,
+			Y: 0,
+		},
+		{
+			X: 5,
+			Y: 0,
+		},
+		{
+			X: 0,
+			Y: 1,
+		},
+		{
+			X: 5,
+			Y: 1,
+		},
+		{
+			X: 0,
+			Y: 2,
+		},
+		{
+			X: 5,
+			Y: 2,
+		},
+		{
+			X: 0,
+			Y: 3,
+		},
+		{
+			X: 5,
+			Y: 3,
+		},
+		{
+			X: 0,
+			Y: 4,
+		},
+		{
+			X: 5,
+			Y: 4,
+		},
+		{
+			X: 0,
+			Y: 5,
+		},
+		{
+			X: 1,
+			Y: 5,
+		},
+		{
+			X: 2,
+			Y: 5,
+		},
+		{
+			X: 3,
+			Y: 5,
+		},
+		{
+			X: 4,
+			Y: 5,
+		},
+		{
+			X: 5,
+			Y: 5,
+		},
+	}
+	border := game.wall.GetBorder()
+	assert.Equal(t, expected, border)
 }
 
 func TestTetrominoEnterFieldAtTopCenter(t *testing.T) {
@@ -38,7 +129,7 @@ func TestTetrominoEnterFieldAtTopCenter(t *testing.T) {
 func TestTetrominoGoDown(t *testing.T) {
 	// prepare
 	rows, columns := 20, 10
-	field := CreateField(rows, columns)
+	field := CreatePlayground(rows, columns)
 	tetromino := CreateTetromino(rows, columns)
 	tetromino.EnterField()
 
@@ -60,7 +151,7 @@ func TestTetrominoGoDown(t *testing.T) {
 func TestTetrominoHitGround(t *testing.T) {
 	// prepare
 	rows, columns := 20, 10
-	field := CreateField(rows, columns)
+	field := CreatePlayground(rows, columns)
 	tetromino := CreateTetromino(rows, columns)
 	tetromino.EnterField()
 
@@ -82,7 +173,7 @@ func TestTetrominoHitGround(t *testing.T) {
 func TestTetrominoHitAnotherTetromino(t *testing.T) {
 	// prepare
 	rows, columns := 20, 10
-	field := CreateField(rows, columns)
+	field := CreatePlayground(rows, columns)
 	field.SetGround([]tetrominoCoord{
 		{
 			s1: coord{
