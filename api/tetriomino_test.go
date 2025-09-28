@@ -29,12 +29,12 @@ func TestTetrominoEnterFieldAtTopCenter(t *testing.T) {
 func TestTetrominoGoDown(t *testing.T) {
 	// prepare
 	rows, columns := 20, 10
-	field := CreatePlayground(rows, columns)
+	playground := CreatePlayground(rows, columns)
 	tetromino := CreateTetromino(rows, columns)
 	tetromino.EnterField()
 
 	// act
-	tetromino.GoDown(field.grid, 10)
+	tetromino.GoDown(playground.grid, 10)
 
 	// assert
 	positions := tetromino.GetPosition()
@@ -51,30 +51,29 @@ func TestTetrominoGoDown(t *testing.T) {
 func TestTetrominoHitGround(t *testing.T) {
 	// prepare
 	rows, columns := 20, 10
-	field := CreatePlayground(rows, columns)
+	playground := CreatePlayground(rows, columns)
 	tetromino := CreateTetromino(rows, columns)
 	tetromino.EnterField()
 
 	// act
-	tetromino.GoDown(field.grid, 20)
+	tetromino.GoDown(playground.grid, 20)
 
 	// assert
+	expected := true
+	got := tetromino.HasHit(playground.grid)
+	assert.Equal(t, expected, got)
+
+	expectedPositions := [][]int{{4, rows - 1}, {5, rows - 1}, {5, rows - 2}, {4, rows - 2}}
 	positions := tetromino.GetPosition()
-	assert.Equal(t, 4, positions[0].X)
-	assert.Equal(t, rows-1, positions[0].Y)
-	assert.Equal(t, 4, positions[3].X)
-	assert.Equal(t, rows-2, positions[3].Y)
-	assert.Equal(t, 5, positions[1].X)
-	assert.Equal(t, rows-1, positions[1].Y)
-	assert.Equal(t, 5, positions[2].X)
-	assert.Equal(t, rows-2, positions[2].Y)
+	gotPositions := [][]int{{positions[0].X, positions[0].Y}, {positions[1].X, positions[1].Y}, {positions[2].X, positions[2].Y}, {positions[3].X, positions[3].Y}}
+	assert.Equal(t, expectedPositions, gotPositions)
 }
 
 func TestTetrominoHitAnotherTetromino(t *testing.T) {
 	// prepare
 	rows, columns := 20, 10
-	field := CreatePlayground(rows, columns)
-	field.SetGround([]tetrominoCoord{
+	playground := CreatePlayground(rows, columns)
+	playground.SetGround([]tetrominoCoord{
 		{
 			s1: coord{
 				X: 4,
@@ -98,16 +97,15 @@ func TestTetrominoHitAnotherTetromino(t *testing.T) {
 	tetromino.EnterField()
 
 	// act
-	tetromino.GoDown(field.grid, 20)
+	tetromino.GoDown(playground.grid, 20)
 
 	// assert
+	expected := true
+	got := tetromino.HasHit(playground.grid)
+	assert.Equal(t, expected, got)
+
+	expectedPositions := [][]int{{4, 17}, {5, 17}, {5, 16}, {4, 16}}
 	positions := tetromino.GetPosition()
-	assert.Equal(t, 4, positions[0].X)
-	assert.Equal(t, 17, positions[0].Y)
-	assert.Equal(t, 4, positions[3].X)
-	assert.Equal(t, 16, positions[3].Y)
-	assert.Equal(t, 5, positions[1].X)
-	assert.Equal(t, 17, positions[1].Y)
-	assert.Equal(t, 5, positions[2].X)
-	assert.Equal(t, 16, positions[2].Y)
+	gotPositions := [][]int{{positions[0].X, positions[0].Y}, {positions[1].X, positions[1].Y}, {positions[2].X, positions[2].Y}, {positions[3].X, positions[3].Y}}
+	assert.Equal(t, expectedPositions, gotPositions)
 }

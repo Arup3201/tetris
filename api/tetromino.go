@@ -70,3 +70,18 @@ func (t *tetromino) GoDown(fieldGrid [][]int, by int) {
 		t.coord.s4.Y = t.coord.s1.Y - 1
 	}
 }
+
+func (t *tetromino) HasHit(fieldGrid [][]int) bool {
+	if t.coord.s1.Y == t.gridRows-1 {
+		return true
+	}
+	if t.coord.s2.Y == t.gridRows-1 {
+		return true
+	}
+
+	if fieldGrid[t.coord.s1.Y+1][t.coord.s1.X] == 1 || fieldGrid[t.coord.s2.Y+1][t.coord.s2.X] == 1 {
+		return true
+	}
+
+	return false
+}
