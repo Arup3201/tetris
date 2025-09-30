@@ -73,25 +73,11 @@ func TestTetrominoHitAnotherTetromino(t *testing.T) {
 	// prepare
 	rows, columns := 20, 10
 	playground := CreatePlayground(rows, columns)
-	playground.SetGround([]tetrominoCoord{
-		{
-			s1: coord{
-				X: 4,
-				Y: 19,
-			},
-			s2: coord{
-				X: 5,
-				Y: 19,
-			},
-			s3: coord{
-				X: 5,
-				Y: 18,
-			},
-			s4: coord{
-				X: 4,
-				Y: 18,
-			},
-		},
+	playground.SetGround([]*square{
+		createSquare(4, 19, "gray"),
+		createSquare(5, 19, "gray"),
+		createSquare(5, 18, "gray"),
+		createSquare(4, 18, "gray"),
 	})
 	tetromino := CreateTetromino(rows, columns)
 	tetromino.EnterField()
