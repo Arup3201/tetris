@@ -73,7 +73,7 @@ func TestTetrominoHitAnotherTetromino(t *testing.T) {
 	// prepare
 	rows, columns := 20, 10
 	playground := CreatePlayground(rows, columns)
-	playground.SetGround([]*square{
+	playground.SetGround([]*Square{
 		createSquare(4, 19, "gray"),
 		createSquare(5, 19, "gray"),
 		createSquare(5, 18, "gray"),

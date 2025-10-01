@@ -1,13 +1,13 @@
 package api
 
 type Playground struct {
-	grid [][]int
+	grid [][]*Square
 }
 
 func CreatePlayground(r, c int) *Playground {
-	grid := make([][]int, r)
+	grid := make([][]*Square, r)
 	for i := range r {
-		grid[i] = make([]int, c)
+		grid[i] = make([]*Square, c)
 	}
 
 	return &Playground{
@@ -15,8 +15,8 @@ func CreatePlayground(r, c int) *Playground {
 	}
 }
 
-func (f *Playground) SetGround(squares []*square) {
+func (f *Playground) SetGround(squares []*Square) {
 	for _, square := range squares {
-		f.grid[square.getY()][square.getX()] = 1
+		f.grid[square.getY()][square.getX()] = square
 	}
 }

@@ -19,7 +19,8 @@ func (t *guiTetromino) Update() error {
 	if t.gameApi.TetrominoDidNotEnterField() {
 		t.gameApi.InitTetromino()
 	} else if t.gameApi.TetrominoHasHit() {
-		// put the tetromino on the playground and enter another tetromino
+		squares := t.gameApi.GetTetrominoSquares()
+		t.gameApi.SetPlayground([]*api.Square{squares[0], squares[1], squares[2], squares[3]})
 	} else {
 		t.gameApi.TetrminoGoDown()
 	}

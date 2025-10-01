@@ -56,3 +56,15 @@ func (g *Game) TetrminoGoDown() {
 func (g *Game) TetrominoHasHit() bool {
 	return g.tetromino.HasHit(g.playground.grid)
 }
+
+func (g *Game) GetTetrominoSquares() [4]*Square {
+	return g.tetromino.squares
+}
+
+func (g *Game) SetPlayground(squares []*Square) {
+	g.playground.SetGround(squares)
+}
+
+func (g *Game) GetPlayground() [][]*Square {
+	return g.playground.grid
+}

@@ -10,6 +10,7 @@ type game struct {
 	gameApi       *api.Game
 	wallGui       *guiWall
 	tetrmonoGui   *guiTetromino
+	playgroundGui *guiPlayground
 }
 
 func CreateGame(gamePlaygroundGridRows, gamePlaygroundGridColumns int,
@@ -28,6 +29,7 @@ func CreateGame(gamePlaygroundGridRows, gamePlaygroundGridColumns int,
 		tetrmonoGui: &guiTetromino{
 			gameApi: g,
 		},
+		playgroundGui: CreatePlaygroundGUI(g, gamePlaygroundGridRows, gamePlaygroundGridColumns),
 	}
 }
 
@@ -38,6 +40,7 @@ func (g *game) Update() error {
 
 func (g *game) Draw(screen *ebiten.Image) {
 	g.wallGui.Draw(screen)
+	g.playgroundGui.Draw(screen)
 	g.tetrmonoGui.Draw(screen)
 }
 
