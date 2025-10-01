@@ -32,12 +32,12 @@ func (sq *square) getY() int {
 	return sq.position.Y
 }
 
-type tetromino struct {
+type Tetromino struct {
 	squares               [4]*square
 	gridRows, gridColumns int
 }
 
-func CreateTetromino(playgroundGridRows, playgroundGridColumns int) *tetromino {
+func CreateTetromino(playgroundGridRows, playgroundGridColumns int) *Tetromino {
 	squares := [4]*square{
 		createSquare(-1, -1, "gray"),
 		createSquare(-1, -1, "gray"),
@@ -45,23 +45,27 @@ func CreateTetromino(playgroundGridRows, playgroundGridColumns int) *tetromino {
 		createSquare(-1, -1, "gray"),
 	}
 
-	return &tetromino{
+	return &Tetromino{
 		squares:     squares,
 		gridRows:    playgroundGridRows,
 		gridColumns: playgroundGridColumns,
 	}
 }
 
-func (t *tetromino) EnterField() {
+func (t *Tetromino) EnterField() {
 	t.squares[0].changePosition(t.gridColumns/2-1, 0)
 	t.squares[1].changePosition(t.gridColumns/2, 0)
 }
 
-func (t *tetromino) GetPosition() []coord {
+func (t *Tetromino) DidNotEnterField() bool {
+	return t.squares[0].getY() == -1 && t.squares[1].getY() == -1
+}
+
+func (t *Tetromino) GetPosition() []coord {
 	return []coord{t.squares[0].position, t.squares[1].position, t.squares[2].position, t.squares[3].position}
 }
 
-func (t *tetromino) GoDown(fieldGrid [][]int, by int) {
+func (t *Tetromino) GoDown(fieldGrid [][]int, by int) {
 	lastPossibleY := t.gridRows - 1
 	for r := range t.gridRows {
 		if fieldGrid[r][t.squares[0].getX()] == 1 || fieldGrid[r][t.squares[1].getX()] == 1 {
@@ -72,16 +76,11 @@ func (t *tetromino) GoDown(fieldGrid [][]int, by int) {
 
 	t.squares[0].changePosition(t.squares[0].getX(), min(t.squares[0].getY()+by, lastPossibleY))
 	t.squares[1].changePosition(t.squares[1].getX(), min(t.squares[1].getY()+by, lastPossibleY))
-
-	if t.squares[2].getX() == -1 && t.squares[2].getY() == -1 {
-		t.squares[2].changePosition(t.squares[1].getX(), t.squares[1].getY()-1)
-	}
-	if t.squares[3].getX() == -1 && t.squares[3].getY() == -1 {
-		t.squares[3].changePosition(t.squares[0].getX(), t.squares[0].getY()-1)
-	}
+	t.squares[2].changePosition(t.squares[1].getX(), t.squares[1].getY()-1)
+	t.squares[3].changePosition(t.squares[0].getX(), t.squares[0].getY()-1)
 }
 
-func (t *tetromino) HasHit(fieldGrid [][]int) bool {
+func (t *Tetromino) HasHit(fieldGrid [][]int) bool {
 	if t.squares[0].getY() == t.gridRows-1 {
 		return true
 	}

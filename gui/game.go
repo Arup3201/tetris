@@ -9,6 +9,7 @@ type game struct {
 	width, height int
 	gameApi       *api.Game
 	wallGui       *guiWall
+	tetrmonoGui   *guiTetromino
 }
 
 func CreateGame(gamePlaygroundGridRows, gamePlaygroundGridColumns int,
@@ -24,15 +25,20 @@ func CreateGame(gamePlaygroundGridRows, gamePlaygroundGridColumns int,
 			offsetY: gameWallOffsetY,
 			gameApi: g,
 		},
+		tetrmonoGui: &guiTetromino{
+			gameApi: g,
+		},
 	}
 }
 
 func (g *game) Update() error {
+	g.tetrmonoGui.Update()
 	return nil
 }
 
 func (g *game) Draw(screen *ebiten.Image) {
 	g.wallGui.Draw(screen)
+	g.tetrmonoGui.Draw(screen)
 }
 
 func (g *game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {

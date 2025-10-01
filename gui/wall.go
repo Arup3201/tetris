@@ -1,9 +1,6 @@
 package gui
 
 import (
-	"image"
-	_ "image/png"
-
 	"github.com/Arup3201/tetris/api"
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -13,21 +10,6 @@ var (
 	tileWidth  = tileSprite.Bounds().Dx()
 	tileHeight = tileSprite.Bounds().Dy()
 )
-
-func mustLoadImage(name string) *ebiten.Image {
-	f, err := assets.Open(name)
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-
-	img, _, err := image.Decode(f)
-	if err != nil {
-		panic(err)
-	}
-
-	return ebiten.NewImageFromImage(img)
-}
 
 type guiWall struct {
 	offsetX, offsetY int
