@@ -28,9 +28,9 @@ func TestGameSetPlayground(t *testing.T) {
 
 	// act
 	playground.SetGround([]*Square{
-		createSquare(4, 19, "gray"),
-		createSquare(5, 19, "gray"),
-		createSquare(6, 19, "orange"),
+		createSquare(4, 19, COLOR_ORANGE),
+		createSquare(5, 19, COLOR_ORANGE),
+		createSquare(6, 19, COLOR_ORANGE),
 	})
 
 	// assert
@@ -40,21 +40,21 @@ func TestGameSetPlayground(t *testing.T) {
 				X: 4,
 				Y: 19,
 			},
-			color: "gray",
+			Color: COLOR_ORANGE,
 		},
 		{
 			position: coord{
 				X: 5,
 				Y: 19,
 			},
-			color: "gray",
+			Color: COLOR_ORANGE,
 		},
 		{
 			position: coord{
 				X: 6,
 				Y: 19,
 			},
-			color: "orange",
+			Color: COLOR_ORANGE,
 		},
 	}
 	assert.Equal(t, expected[0], playground.grid[19][4])

@@ -49,16 +49,16 @@ func (g *Game) GetTetrominoPosition() []coord {
 	return tetrominoPos
 }
 
+func (g *Game) GetTetrominoSquares() [4]*Square {
+	return g.tetromino.squares
+}
+
 func (g *Game) TetrminoGoDown() {
 	g.tetromino.GoDown(g.playground.grid, 1)
 }
 
 func (g *Game) TetrominoHasHit() bool {
 	return g.tetromino.HasHit(g.playground.grid)
-}
-
-func (g *Game) GetTetrominoSquares() [4]*Square {
-	return g.tetromino.squares
 }
 
 func (g *Game) SetPlayground(squares []*Square) {

@@ -48,6 +48,30 @@ func TestTetrominoGoDown(t *testing.T) {
 	assert.Equal(t, 9, positions[2].Y)
 }
 
+func TestTetrominoGoDown10TimesBy1(t *testing.T) {
+	// prepare
+	rows, columns := 20, 10
+	playground := CreatePlayground(rows, columns)
+	tetromino := CreateTetromino(rows, columns)
+	tetromino.EnterField()
+
+	// act
+	for range 10 {
+		tetromino.GoDown(playground.grid, 1)
+	}
+
+	// assert
+	positions := tetromino.GetPosition()
+	assert.Equal(t, 4, positions[0].X)
+	assert.Equal(t, 10, positions[0].Y)
+	assert.Equal(t, 4, positions[3].X)
+	assert.Equal(t, 9, positions[3].Y)
+	assert.Equal(t, 5, positions[1].X)
+	assert.Equal(t, 10, positions[1].Y)
+	assert.Equal(t, 5, positions[2].X)
+	assert.Equal(t, 9, positions[2].Y)
+}
+
 func TestTetrominoHitGround(t *testing.T) {
 	// prepare
 	rows, columns := 20, 10
@@ -74,10 +98,10 @@ func TestTetrominoHitAnotherTetromino(t *testing.T) {
 	rows, columns := 20, 10
 	playground := CreatePlayground(rows, columns)
 	playground.SetGround([]*Square{
-		createSquare(4, 19, "gray"),
-		createSquare(5, 19, "gray"),
-		createSquare(5, 18, "gray"),
-		createSquare(4, 18, "gray"),
+		createSquare(4, 19, COLOR_ORANGE),
+		createSquare(5, 19, COLOR_ORANGE),
+		createSquare(5, 18, COLOR_ORANGE),
+		createSquare(4, 18, COLOR_ORANGE),
 	})
 	tetromino := CreateTetromino(rows, columns)
 	tetromino.EnterField()

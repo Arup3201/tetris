@@ -29,13 +29,17 @@ func (t *guiTetromino) Update() error {
 
 func (t *guiTetromino) Draw(screen *ebiten.Image) {
 	squareX, squareY := 0, 0
-	positions := t.gameApi.GetTetrominoPosition()
+	squares := t.gameApi.GetTetrominoSquares()
 	op := &ebiten.DrawImageOptions{}
 
-	for _, pos := range positions {
-		if pos.X != -1 && pos.Y != -1 {
-			squareX, squareY = pos.X*squareWidth, pos.Y*squareHeight
+	for _, sq := range squares {
+		if sq.GetX() != -1 && sq.GetY() != -1 {
+			squareX, squareY = (sq.GetX()+1)*squareWidth, (sq.GetY()+1)*squareHeight
 			op.GeoM.Translate(float64(squareX), float64(squareY))
+			op.ColorScale.SetR(float32(sq.Color.R))
+			op.ColorScale.SetG(float32(sq.Color.G))
+			op.ColorScale.SetB(float32(sq.Color.B))
+			op.ColorScale.SetA(float32(sq.Color.A))
 			screen.DrawImage(squareSprite, op)
 			op.GeoM.Translate(-float64(squareX), -float64(squareY)) // revert relative position
 		}

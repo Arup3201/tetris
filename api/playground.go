@@ -17,6 +17,6 @@ func CreatePlayground(r, c int) *Playground {
 
 func (f *Playground) SetGround(squares []*Square) {
 	for _, square := range squares {
-		f.grid[square.getY()][square.getX()] = square
+		f.grid[square.GetY()][square.GetX()] = square
 	}
 }

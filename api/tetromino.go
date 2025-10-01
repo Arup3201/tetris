@@ -4,18 +4,31 @@ type coord struct {
 	X, Y int
 }
 
-type Square struct {
-	position coord
-	color    string
+type color struct {
+	R, G, B, A uint8
 }
 
-func createSquare(x, y int, color string) *Square {
+var (
+	COLOR_ORANGE = color{
+		R: 255,
+		G: 165,
+		B: 0,
+		A: 255,
+	}
+)
+
+type Square struct {
+	position coord
+	Color    color
+}
+
+func createSquare(x, y int, color color) *Square {
 	return &Square{
 		position: coord{
 			X: x,
 			Y: y,
 		},
-		color: color,
+		Color: color,
 	}
 }
 
@@ -24,11 +37,11 @@ func (sq *Square) changePosition(x, y int) {
 	sq.position.Y = y
 }
 
-func (sq *Square) getX() int {
+func (sq *Square) GetX() int {
 	return sq.position.X
 }
 
-func (sq *Square) getY() int {
+func (sq *Square) GetY() int {
 	return sq.position.Y
 }
 
@@ -39,10 +52,10 @@ type Tetromino struct {
 
 func CreateTetromino(playgroundGridRows, playgroundGridColumns int) *Tetromino {
 	squares := [4]*Square{
-		createSquare(-1, -1, "gray"),
-		createSquare(-1, -1, "gray"),
-		createSquare(-1, -1, "gray"),
-		createSquare(-1, -1, "gray"),
+		createSquare(-1, -1, COLOR_ORANGE),
+		createSquare(-1, -1, COLOR_ORANGE),
+		createSquare(-1, -1, COLOR_ORANGE),
+		createSquare(-1, -1, COLOR_ORANGE),
 	}
 
 	return &Tetromino{
@@ -58,7 +71,7 @@ func (t *Tetromino) EnterField() {
 }
 
 func (t *Tetromino) DidNotEnterField() bool {
-	return t.squares[0].getY() == -1 && t.squares[1].getY() == -1
+	return t.squares[0].GetY() == -1 && t.squares[1].GetY() == -1
 }
 
 func (t *Tetromino) GetPosition() []coord {
@@ -68,27 +81,27 @@ func (t *Tetromino) GetPosition() []coord {
 func (t *Tetromino) GoDown(grid [][]*Square, by int) {
 	lastPossibleY := t.gridRows - 1
 	for r := range t.gridRows {
-		if grid[r][t.squares[0].getX()] != nil || grid[r][t.squares[1].getX()] != nil {
+		if grid[r][t.squares[0].GetX()] != nil || grid[r][t.squares[1].GetX()] != nil {
 			lastPossibleY = r - 1
 			break
 		}
 	}
 
-	t.squares[0].changePosition(t.squares[0].getX(), min(t.squares[0].getY()+by, lastPossibleY))
-	t.squares[1].changePosition(t.squares[1].getX(), min(t.squares[1].getY()+by, lastPossibleY))
-	t.squares[2].changePosition(t.squares[1].getX(), t.squares[1].getY()-1)
-	t.squares[3].changePosition(t.squares[0].getX(), t.squares[0].getY()-1)
+	t.squares[0].changePosition(t.squares[0].GetX(), min(t.squares[0].GetY()+by, lastPossibleY))
+	t.squares[1].changePosition(t.squares[1].GetX(), min(t.squares[1].GetY()+by, lastPossibleY))
+	t.squares[2].changePosition(t.squares[1].GetX(), t.squares[1].GetY()-1)
+	t.squares[3].changePosition(t.squares[0].GetX(), t.squares[0].GetY()-1)
 }
 
 func (t *Tetromino) HasHit(fieldGrid [][]*Square) bool {
-	if t.squares[0].getY() == t.gridRows-1 {
+	if t.squares[0].GetY() == t.gridRows-1 {
 		return true
 	}
-	if t.squares[1].getY() == t.gridRows-1 {
+	if t.squares[1].GetY() == t.gridRows-1 {
 		return true
 	}
 
-	if fieldGrid[t.squares[0].getY()+1][t.squares[0].getX()] != nil || fieldGrid[t.squares[1].getY()+1][t.squares[0].getX()] != nil {
+	if fieldGrid[t.squares[0].GetY()+1][t.squares[0].GetX()] != nil || fieldGrid[t.squares[1].GetY()+1][t.squares[0].GetX()] != nil {
 		return true
 	}
 
