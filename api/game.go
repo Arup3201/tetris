@@ -1,70 +1,38 @@
 package api
 
 type Game struct {
-	gridWidth, gridHeight int
-	wall                  *Wall
-	playground            *Playground
-	tetromino             *Tetromino
+	width, height int
+	grid          [][]string
+	score         int
 }
 
 func CreateGame(r, c int) *Game {
-	return &Game{
-		gridHeight: r,
-		gridWidth:  c,
-		wall: &Wall{
-			height: r + 2,
-			width:  c + 2,
-		},
-		tetromino:  CreateTetromino(r, c),
-		playground: CreatePlayground(r, c),
+	gameWidth, gameHeight := c+2, r+2
+
+	grid := make([][]string, gameHeight)
+	for r := range gameHeight {
+		grid[r] = make([]string, gameWidth)
 	}
-}
 
-func (g *Game) GetWall() []coord {
-	return g.wall.GetBorder()
-}
+	for c := range gameWidth {
+		grid[0][c] = "wall"
+		grid[gameHeight-1][c] = "wall"
+	}
+	for r := range gameHeight {
+		grid[r][0] = "wall"
+		grid[r][gameWidth-1] = "wall"
+	}
 
-func (g *Game) InitTetromino() {
-	g.tetromino.EnterField()
-}
-
-func (g *Game) TetrominoDidNotEnterField() bool {
-	return g.tetromino.DidNotEnterField()
-}
-
-func (g *Game) GetTetrominoPosition() []coord {
-	positions := g.tetromino.GetPosition()
-
-	// account for the wall
-	tetrominoPos := []coord{}
-	for _, position := range positions {
-		if position.X != -1 || position.Y != -1 {
-			tetrominoPos = append(tetrominoPos, coord{
-				X: position.X + 1,
-				Y: position.Y + 1,
-			})
+	for r := range gameHeight - 2 {
+		for c := range gameWidth - 2 {
+			grid[r+1][c+1] = "blank"
 		}
 	}
 
-	return tetrominoPos
-}
-
-func (g *Game) GetTetrominoSquares() [4]*Square {
-	return g.tetromino.squares
-}
-
-func (g *Game) TetrminoGoDown() {
-	g.tetromino.GoDown(g.playground.grid, 1)
-}
-
-func (g *Game) TetrominoHasHit() bool {
-	return g.tetromino.HasHit(g.playground.grid)
-}
-
-func (g *Game) SetPlayground(squares []*Square) {
-	g.playground.SetGround(squares)
-}
-
-func (g *Game) GetPlayground() [][]*Square {
-	return g.playground.grid
+	return &Game{
+		width:  gameWidth,
+		height: gameHeight,
+		grid:   grid,
+		score:  0,
+	}
 }
