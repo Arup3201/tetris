@@ -8,9 +8,6 @@ import (
 type game struct {
 	width, height int
 	gameApi       *api.Game
-	wallGui       *guiWall
-	tetrmonoGui   *guiTetromino
-	playgroundGui *guiPlayground
 }
 
 func CreateGame(gamePlaygroundGridRows, gamePlaygroundGridColumns int,
@@ -21,27 +18,14 @@ func CreateGame(gamePlaygroundGridRows, gamePlaygroundGridColumns int,
 		width:   gameWindowWidth,
 		height:  gameWindowHeight,
 		gameApi: g,
-		wallGui: &guiWall{
-			offsetX: gameWallOffsetX,
-			offsetY: gameWallOffsetY,
-			gameApi: g,
-		},
-		tetrmonoGui: &guiTetromino{
-			gameApi: g,
-		},
-		playgroundGui: CreatePlaygroundGUI(g, gamePlaygroundGridRows, gamePlaygroundGridColumns),
 	}
 }
 
 func (g *game) Update() error {
-	g.tetrmonoGui.Update()
 	return nil
 }
 
 func (g *game) Draw(screen *ebiten.Image) {
-	g.wallGui.Draw(screen)
-	g.playgroundGui.Draw(screen)
-	g.tetrmonoGui.Draw(screen)
 }
 
 func (g *game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
