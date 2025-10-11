@@ -6,8 +6,8 @@ type Game struct {
 	score         int
 }
 
-func CreateGame(r, c int) *Game {
-	gameWidth, gameHeight := c+2, r+2
+func CreateGame(gamePlaygroundRows, gamePlaygroundColumns int) *Game {
+	gameWidth, gameHeight := gamePlaygroundColumns+2, gamePlaygroundRows+2
 
 	grid := make([][]string, gameHeight)
 	for r := range gameHeight {
@@ -35,4 +35,17 @@ func CreateGame(r, c int) *Game {
 		grid:   grid,
 		score:  0,
 	}
+}
+
+func (g *Game) GetWallCoordinates() [][]int {
+	coordinates := [][]int{}
+	for r := range g.height {
+		for c := range g.width {
+			if g.grid[r][c] == "wall" {
+				coordinates = append(coordinates, []int{r, c})
+			}
+		}
+	}
+
+	return coordinates
 }
