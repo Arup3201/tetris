@@ -9,6 +9,7 @@ type game struct {
 	width, height int
 	gameApi       *api.Game
 	wall          *wallGui
+	playground    *playgroundGui
 }
 
 func CreateGame(gamePlaygroundGridRows, gamePlaygroundGridColumns int,
@@ -22,6 +23,9 @@ func CreateGame(gamePlaygroundGridRows, gamePlaygroundGridColumns int,
 		wall: &wallGui{
 			gameApi: g,
 		},
+		playground: createPlaygroundGUI(g,
+			gamePlaygroundGridRows,
+			gamePlaygroundGridColumns),
 	}
 }
 
@@ -31,6 +35,7 @@ func (g *game) Update() error {
 
 func (g *game) Draw(screen *ebiten.Image) {
 	g.wall.Draw(screen)
+	g.playground.Draw(screen)
 }
 
 func (g *game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {

@@ -20,17 +20,17 @@ func TestGameStart(t *testing.T) {
 	assert.Equal(t, 12, game.width)
 	assert.Equal(t, 22, game.height)
 	for c := range game.width {
-		assert.Equal(t, "wall", game.grid[0][c])
-		assert.Equal(t, "wall", game.grid[game.height-1][c])
+		assert.Equal(t, WALL_ID, game.grid[0][c])
+		assert.Equal(t, WALL_ID, game.grid[game.height-1][c])
 	}
 	for r := range game.height {
-		assert.Equal(t, "wall", game.grid[r][0])
-		assert.Equal(t, "wall", game.grid[r][game.width-1])
+		assert.Equal(t, WALL_ID, game.grid[r][0])
+		assert.Equal(t, WALL_ID, game.grid[r][game.width-1])
 	}
 	// playground should be empty
 	for r := range game.height - 2 {
 		for c := range game.width - 2 {
-			assert.Equal(t, "blank", game.grid[r+1][c+1])
+			assert.Equal(t, BLANK_ID, game.grid[r+1][c+1])
 		}
 	}
 	// score should be 0
@@ -46,25 +46,34 @@ func TestGetWall(t *testing.T) {
 	wall := game.GetWallCoordinates()
 
 	// assert
-	expectedWallCoordinates := [][]int{}
+	expectedWallCoordinates := [][2]int{}
 	for c := range game.width {
-		expectedWallCoordinates = append(expectedWallCoordinates, []int{0, c})
-		expectedWallCoordinates = append(expectedWallCoordinates, []int{game.height - 1, c})
+		expectedWallCoordinates = append(expectedWallCoordinates, [2]int{0, c})
+		expectedWallCoordinates = append(expectedWallCoordinates, [2]int{game.height - 1, c})
 	}
 	for r := range game.height {
-		expectedWallCoordinates = append(expectedWallCoordinates, []int{r, 0})
-		expectedWallCoordinates = append(expectedWallCoordinates, []int{r, game.width - 1})
+		expectedWallCoordinates = append(expectedWallCoordinates, [2]int{r, 0})
+		expectedWallCoordinates = append(expectedWallCoordinates, [2]int{r, game.width - 1})
 	}
-	included := false
 	for _, want := range expectedWallCoordinates {
-		included = false
-		for _, got := range wall {
-			if slices.Equal(want, got) {
-				included = true
-			}
-		}
-		if !included {
-			t.Errorf("expected %v to be included in the wall coordinates %v", want, wall)
+		assert.Equal(t, true, slices.Contains(wall, want))
+	}
+}
+
+func TestGetPlayground(t *testing.T) {
+	// prepare
+	rows, columns := 20, 10
+	game := CreateGame(rows, columns)
+
+	// act
+	playground := game.GetPlayground()
+
+	// assert
+	expectedPlayground := map[[2]int]string{}
+	for r := range game.height - 2 {
+		for c := range game.width - 2 {
+			expectedPlayground[[2]int{r + 1, c + 1}] = BLANK_ID
 		}
 	}
+	assert.Equal(t, expectedPlayground, playground)
 }
