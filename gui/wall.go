@@ -19,12 +19,12 @@ func (w *wallGui) Draw(screen *ebiten.Image) {
 	coordinates := w.gameApi.GetWallCoordinates()
 	opt := &ebiten.DrawImageOptions{}
 
-	for _, wallBlock := range coordinates {
-		opt.GeoM.Translate(float64(wallBlockWidth*wallBlock[1]),
-			float64(wallBlockHeight*wallBlock[0]))
+	for _, rc := range coordinates {
+		opt.GeoM.Translate(float64(wallBlockWidth*rc[1]),
+			float64(wallBlockHeight*rc[0]))
 		screen.DrawImage(wallBlockSprite, opt)
 
-		opt.GeoM.Translate(-float64(wallBlockWidth*wallBlock[1]),
-			-float64(wallBlockHeight*wallBlock[0]))
+		opt.GeoM.Translate(-float64(wallBlockWidth*rc[1]),
+			-float64(wallBlockHeight*rc[0]))
 	}
 }

@@ -77,3 +77,30 @@ func TestGetPlayground(t *testing.T) {
 	}
 	assert.Equal(t, expectedPlayground, playground)
 }
+
+func TestTetrisDropInsidePlayground(t *testing.T) {
+	// prepare
+	rows, columns := 20, 10
+	game := CreateGame(rows, columns)
+	tetrominoColor, tetrominoShape := COLOR_YELLOW, SHAPE_T
+
+	// act
+	game.DropTetromino(tetrominoShape, tetrominoColor)
+
+	// assert
+	expectedTetromino := map[string]any{
+		"color": COLOR_YELLOW,
+		"shape": SHAPE_T,
+		"position": [4][2]int{
+			{1, 6},
+			{-1, -1},
+			{-1, -1},
+			{-1, -1},
+		},
+	}
+	got := game.droppingTetromino.getPosition()
+	assert.Equal(t, expectedTetromino["shape"], SHAPE_T)
+	assert.Equal(t, expectedTetromino["color"], COLOR_YELLOW)
+	assert.Equal(t, expectedTetromino["position"], got)
+	assert.Equal(t, true, game.HasTetrominoDropped)
+}

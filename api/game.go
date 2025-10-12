@@ -1,14 +1,23 @@
 package api
 
 const (
-	WALL_ID  = "wall"
-	BLANK_ID = "blank"
+	WALL_ID      = "wall"
+	BLANK_ID     = "blank"
+	COLOR_YELLOW = "yellow"
 )
 
+type tetromino interface {
+	getPosition() [4][2]int
+	drop()
+}
+
 type Game struct {
-	width, height int
-	grid          [][]string
-	score         int
+	width, height     int
+	grid              [][]string
+	score             int
+	droppingTetromino tetromino
+
+	HasTetrominoDropped bool
 }
 
 func CreateGame(gamePlaygroundRows, gamePlaygroundColumns int) *Game {
@@ -66,4 +75,21 @@ func (g *Game) GetPlayground() map[[2]int]string {
 	}
 
 	return playground
+}
+
+func (g *Game) GetTetrominoPosition() [4][2]int {
+	coordinates := g.droppingTetromino.getPosition()
+	for i := range coordinates {
+		if coordinates[i][0] != -1 { // coordinates[i][1] != -1
+			coordinates[i][0] += 1
+			coordinates[i][1] += 1
+		}
+	}
+	return coordinates
+}
+
+func (g *Game) DropTetromino(shape, color string) {
+	g.droppingTetromino = newTetromino(shape, color)
+	g.HasTetrominoDropped = true
+	g.droppingTetromino.drop()
 }
