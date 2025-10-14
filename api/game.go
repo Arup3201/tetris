@@ -1,70 +1,95 @@
 package api
 
+const (
+	WALL_ID      = "wall"
+	BLANK_ID     = "blank"
+	COLOR_YELLOW = "yellow"
+)
+
+type tetromino interface {
+	getPosition() [4][2]int
+	drop()
+}
+
 type Game struct {
-	gridWidth, gridHeight int
-	wall                  *Wall
-	playground            *Playground
-	tetromino             *Tetromino
+	width, height     int
+	grid              [][]string
+	score             int
+	droppingTetromino tetromino
+
+	HasTetrominoDropped bool
 }
 
-func CreateGame(r, c int) *Game {
-	return &Game{
-		gridHeight: r,
-		gridWidth:  c,
-		wall: &Wall{
-			height: r + 2,
-			width:  c + 2,
-		},
-		tetromino:  CreateTetromino(r, c),
-		playground: CreatePlayground(r, c),
+func CreateGame(gamePlaygroundRows, gamePlaygroundColumns int) *Game {
+	gameWidth, gameHeight := gamePlaygroundColumns+2, gamePlaygroundRows+2
+
+	grid := make([][]string, gameHeight)
+	for r := range gameHeight {
+		grid[r] = make([]string, gameWidth)
 	}
-}
 
-func (g *Game) GetWall() []coord {
-	return g.wall.GetBorder()
-}
+	for c := range gameWidth {
+		grid[0][c] = WALL_ID
+		grid[gameHeight-1][c] = WALL_ID
+	}
+	for r := range gameHeight {
+		grid[r][0] = WALL_ID
+		grid[r][gameWidth-1] = WALL_ID
+	}
 
-func (g *Game) InitTetromino() {
-	g.tetromino.EnterField()
-}
-
-func (g *Game) TetrominoDidNotEnterField() bool {
-	return g.tetromino.DidNotEnterField()
-}
-
-func (g *Game) GetTetrominoPosition() []coord {
-	positions := g.tetromino.GetPosition()
-
-	// account for the wall
-	tetrominoPos := []coord{}
-	for _, position := range positions {
-		if position.X != -1 || position.Y != -1 {
-			tetrominoPos = append(tetrominoPos, coord{
-				X: position.X + 1,
-				Y: position.Y + 1,
-			})
+	for r := range gameHeight - 2 {
+		for c := range gameWidth - 2 {
+			grid[r+1][c+1] = BLANK_ID
 		}
 	}
 
-	return tetrominoPos
+	return &Game{
+		width:  gameWidth,
+		height: gameHeight,
+		grid:   grid,
+		score:  0,
+	}
 }
 
-func (g *Game) GetTetrominoSquares() [4]*Square {
-	return g.tetromino.squares
+func (g *Game) GetWallCoordinates() [][2]int {
+	coordinates := [][2]int{}
+	for r := range g.height {
+		for c := range g.width {
+			if g.grid[r][c] == WALL_ID {
+				coordinates = append(coordinates, [2]int{r, c})
+			}
+		}
+	}
+
+	return coordinates
 }
 
-func (g *Game) TetrminoGoDown() {
-	g.tetromino.GoDown(g.playground.grid, 1)
+func (g *Game) GetPlayground() map[[2]int]string {
+	playground := make(map[[2]int]string, 0)
+	for r := range g.height {
+		for c := range g.width {
+			if g.grid[r][c] != WALL_ID {
+				playground[[2]int{r, c}] = g.grid[r][c]
+			}
+		}
+	}
+
+	return playground
 }
 
-func (g *Game) TetrominoHasHit() bool {
-	return g.tetromino.HasHit(g.playground.grid)
+func (g *Game) GetTetrominoPosition() [4][2]int {
+	coordinates := g.droppingTetromino.getPosition()
+	for i := range coordinates {
+		if coordinates[i][0] != -1 { // coordinates[i][1] != -1
+			coordinates[i][0] += 1
+			coordinates[i][1] += 1
+		}
+	}
+	return coordinates
 }
 
-func (g *Game) SetPlayground(squares []*Square) {
-	g.playground.SetGround(squares)
-}
-
-func (g *Game) GetPlayground() [][]*Square {
-	return g.playground.grid
+func (g *Game) DropTetromino(shape, color string) {
+	g.droppingTetromino = newTetromino(shape, color)
+	g.HasTetrominoDropped = true
+	g.droppingTetromino.drop()
 }

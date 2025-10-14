@@ -5,26 +5,26 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-var tileSprite = mustLoadImage("assets/tile.png")
 var (
-	tileWidth  = tileSprite.Bounds().Dx()
-	tileHeight = tileSprite.Bounds().Dy()
+	wallBlockSprite = mustLoadImage("assets/tile.png")
+	wallBlockWidth  = wallBlockSprite.Bounds().Dx()
+	wallBlockHeight = wallBlockSprite.Bounds().Dy()
 )
 
-type guiWall struct {
-	offsetX, offsetY int
-	gameApi          *api.Game
+type wallGui struct {
+	gameApi *api.Game
 }
 
-func (w *guiWall) Draw(screen *ebiten.Image) {
-	newTileX, newTileY := 0, 0
-	op := &ebiten.DrawImageOptions{}
+func (w *wallGui) Draw(screen *ebiten.Image) {
+	coordinates := w.gameApi.GetWallCoordinates()
+	opt := &ebiten.DrawImageOptions{}
 
-	border := w.gameApi.GetWall()
-	for _, coord := range border {
-		newTileX, newTileY = w.offsetX+coord.X*tileWidth, w.offsetY+coord.Y*tileHeight
-		op.GeoM.Translate(float64(newTileX), float64(newTileY))
-		screen.DrawImage(tileSprite, op)
-		op.GeoM.Translate(-float64(newTileX), -float64(newTileY)) // revert relative position
+	for _, rc := range coordinates {
+		opt.GeoM.Translate(float64(wallBlockWidth*rc[1]),
+			float64(wallBlockHeight*rc[0]))
+		screen.DrawImage(wallBlockSprite, opt)
+
+		opt.GeoM.Translate(-float64(wallBlockWidth*rc[1]),
+			-float64(wallBlockHeight*rc[0]))
 	}
 }

@@ -8,12 +8,18 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
-type guiPlayground struct {
+var (
+	squareSprite = mustLoadImage("assets/square.png")
+	squareHeight = squareSprite.Bounds().Dy()
+	squareWidth  = squareSprite.Bounds().Dx()
+)
+
+type playgroundGui struct {
 	gameApi          *api.Game
 	playgroundSprite *ebiten.Image
 }
 
-func CreatePlaygroundGUI(g *api.Game, rows, columns int) *guiPlayground {
+func createPlaygroundGUI(g *api.Game, rows, columns int) *playgroundGui {
 	sprite := ebiten.NewImage(columns*squareWidth, rows*squareHeight)
 	for r := range rows {
 		if r == 0 {
@@ -38,15 +44,24 @@ func CreatePlaygroundGUI(g *api.Game, rows, columns int) *guiPlayground {
 		}, false)
 	}
 
-	return &guiPlayground{
+	return &playgroundGui{
 		gameApi:          g,
 		playgroundSprite: sprite,
 	}
 }
 
-func (p *guiPlayground) Draw(screen *ebiten.Image) {
-	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(float64(tileWidth), float64(tileHeight))
-	screen.DrawImage(p.playgroundSprite, op)
-	op.GeoM.Translate(-float64(tileWidth), -float64(tileHeight))
+func (p *playgroundGui) Draw(screen *ebiten.Image) {
+	playground := p.gameApi.GetPlayground()
+	opt := &ebiten.DrawImageOptions{}
+
+	// move after the wall
+	opt.GeoM.Translate(float64(wallBlockWidth), float64(wallBlockHeight))
+	screen.DrawImage(p.playgroundSprite, opt)
+	opt.GeoM.Translate(-float64(wallBlockWidth), -float64(wallBlockHeight))
+
+	for _, id := range playground {
+		if id != api.BLANK_ID {
+			// draw square
+		}
+	}
 }
