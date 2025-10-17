@@ -98,7 +98,7 @@ func TestTetrisDropInsidePlayground(t *testing.T) {
 			{-1, -1},
 		},
 	}
-	got := game.droppingTetromino.getPosition()
+	got := game.GetTetrominoPosition()
 	assert.Equal(t, expectedTetromino["shape"], SHAPE_T)
 	assert.Equal(t, expectedTetromino["color"], COLOR_YELLOW)
 	assert.Equal(t, expectedTetromino["position"], got)

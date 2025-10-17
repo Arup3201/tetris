@@ -8,6 +8,10 @@ Gui access the game api using `Game` structure. This structure exposes few metho
 
 All the coordinates returned from the API are in the format of `[row, column]` in the game grid system. The wall and playground are part of the grid.
 
+The grid looks like the following:
+
+![Game grid system with wall and playground](images/game-structure.png)
+
 Following methods are exposed:
 
 1. `CreateGame(rows, columns)`: It takes number of `rows` and `columns` that the game playground will have (excluding the wall). The actual height and width of the game grid is `rows+2` and `columns+2` respectively. The extra 2 is for the wall on the left, right, top and bottom.

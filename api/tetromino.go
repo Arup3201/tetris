@@ -6,10 +6,10 @@ const (
 	SHAPE_T = "T"
 )
 
-func newTetromino(shape, color string) tetromino {
+func newTetromino(shape, color string, playgroundDimension [2]int) tetromino {
 	switch shape {
 	case SHAPE_T:
-		return newTTetromino(color)
+		return newTTetromino(color, playgroundDimension)
 	}
 
 	log.Fatalf("unsupported tetromino shape %s", shape)
@@ -17,11 +17,12 @@ func newTetromino(shape, color string) tetromino {
 }
 
 type tTetromino struct {
-	color       string
-	coordinates [4][2]int
+	color               string
+	coordinates         [4][2]int
+	playgroundDimension [2]int // [width, height]
 }
 
-func newTTetromino(color string) *tTetromino {
+func newTTetromino(color string, playgroundDimension [2]int) *tTetromino {
 	return &tTetromino{
 		color: color,
 		coordinates: [4][2]int{
@@ -30,6 +31,7 @@ func newTTetromino(color string) *tTetromino {
 			{-1, -1},
 			{-1, -1},
 		},
+		playgroundDimension: playgroundDimension,
 	}
 }
 
@@ -38,6 +40,7 @@ func (t *tTetromino) getPosition() [4][2]int {
 }
 
 func (t *tTetromino) drop() {
+	// consider the walls
 	t.coordinates[0][0] = 0
-	t.coordinates[0][1] = 5
+	t.coordinates[0][1] = t.playgroundDimension[0] / 2
 }
