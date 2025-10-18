@@ -12,6 +12,8 @@ type tetrominoGui struct {
 func (t *tetrominoGui) Update() error {
 	if !t.gameApi.HasTetrominoDropped {
 		t.gameApi.DropTetromino(api.SHAPE_T, api.COLOR_YELLOW)
+	} else {
+		t.gameApi.TetrominoFallsByOne()
 	}
 	return nil
 }

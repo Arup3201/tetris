@@ -9,6 +9,7 @@ const (
 type tetromino interface {
 	getPosition() [4][2]int
 	drop()
+	fallByOne()
 }
 
 type Game struct {
@@ -91,7 +92,11 @@ func (g *Game) GetTetrominoPosition() [4][2]int {
 
 func (g *Game) DropTetromino(shape, color string) {
 	// tetromino does not consider walls internally
-	g.droppingTetromino = newTetromino(shape, color, [2]int{g.width - 2, g.height - 2})
+	g.droppingTetromino = newTetromino(shape, color, [2]int{g.height - 2, g.width - 2})
 	g.HasTetrominoDropped = true
 	g.droppingTetromino.drop()
+}
+
+func (g *Game) TetrominoFallsByOne() {
+	g.droppingTetromino.fallByOne()
 }
