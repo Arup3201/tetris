@@ -9,6 +9,7 @@ const (
 type tetromino interface {
 	getPosition() [4][2]int
 	drop()
+	fallByOne()
 }
 
 type Game struct {
@@ -79,6 +80,7 @@ func (g *Game) GetPlayground() map[[2]int]string {
 
 func (g *Game) GetTetrominoPosition() [4][2]int {
 	coordinates := g.droppingTetromino.getPosition()
+	// consider the walls
 	for i := range coordinates {
 		if coordinates[i][0] != -1 { // coordinates[i][1] != -1
 			coordinates[i][0] += 1
@@ -89,7 +91,12 @@ func (g *Game) GetTetrominoPosition() [4][2]int {
 }
 
 func (g *Game) DropTetromino(shape, color string) {
-	g.droppingTetromino = newTetromino(shape, color)
+	// tetromino does not consider walls internally
+	g.droppingTetromino = newTetromino(shape, color, [2]int{g.height - 2, g.width - 2})
 	g.HasTetrominoDropped = true
 	g.droppingTetromino.drop()
+}
+
+func (g *Game) TetrominoFallsByOne() {
+	g.droppingTetromino.fallByOne()
 }
