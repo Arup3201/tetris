@@ -27,9 +27,7 @@ func CreateGame(gamePlaygroundGridRows, gamePlaygroundGridColumns int,
 		playground: createPlaygroundGUI(g,
 			gamePlaygroundGridRows,
 			gamePlaygroundGridColumns),
-		tetromino: &tetrominoGui{
-			gameApi: g,
-		},
+		tetromino: createTetrominoGui(g),
 	}
 }
 
