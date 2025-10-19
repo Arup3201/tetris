@@ -56,7 +56,7 @@ func (t *tTetromino) fallByOne(playground [][]string) {
 
 	if t.coordinates[1][0] == -1 {
 		t.coordinates[1][0] = 0
-		t.coordinates[1][1] = t.playgroundDimension[1] / 2
+		t.coordinates[1][1] = t.coordinates[0][1]
 	} else {
 		t.coordinates[1][0]++
 	}
@@ -88,4 +88,25 @@ func (t *tTetromino) hasHit(playground [][]string) bool {
 	}
 
 	return false
+}
+
+func (t *tTetromino) moveRightByOne(playground [][]string) {
+	// check playground boundary
+	if (t.coordinates[2][1] == -1 && t.coordinates[0][1]+1 == t.playgroundDimension[1]) ||
+		(t.coordinates[2][1] != -1 && t.coordinates[2][1]+1 == t.playgroundDimension[1]) {
+		return
+	}
+
+	// hit wall or another square of a tetromino piece
+	if (t.coordinates[0][1] != -1 && (playground[t.coordinates[0][0]][t.coordinates[0][1]+1] == SQUARE_ID || playground[t.coordinates[0][0]][t.coordinates[0][1]+1] == WALL_ID)) ||
+		(t.coordinates[2][1] != -1 && (playground[t.coordinates[2][0]][t.coordinates[2][1]+1] == SQUARE_ID || playground[t.coordinates[2][0]][t.coordinates[2][1]+1] == WALL_ID)) ||
+		(t.coordinates[3][1] != -1 && (playground[t.coordinates[3][0]][t.coordinates[3][1]+1] == SQUARE_ID || playground[t.coordinates[3][0]][t.coordinates[3][1]+1] == WALL_ID)) {
+		return
+	}
+
+	for i := range t.coordinates {
+		if t.coordinates[i][1] != -1 {
+			t.coordinates[i][1]++
+		}
+	}
 }

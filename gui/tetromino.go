@@ -24,7 +24,12 @@ func createTetrominoGui(g *api.Game) *tetrominoGui {
 func (t *tetrominoGui) Update() error {
 	if !t.gameApi.HasTetrominoDropped {
 		t.gameApi.DropTetromino(api.SHAPE_T, api.COLOR_YELLOW)
-	} else if t.transitionCount != 0 {
+	} else if t.transitionCount > 0 {
+		if ebiten.IsKeyPressed(ebiten.KeyDown) {
+			t.transitionCount -= 10
+		} else if ebiten.IsKeyPressed(ebiten.KeyRight) {
+			t.gameApi.MoveTetrominoRight()
+		}
 		t.transitionCount--
 	} else {
 		t.gameApi.TetrominoFallsByOne()
