@@ -59,9 +59,14 @@ func (p *playgroundGui) Draw(screen *ebiten.Image) {
 	screen.DrawImage(p.playgroundSprite, opt)
 	opt.GeoM.Translate(-float64(wallBlockWidth), -float64(wallBlockHeight))
 
-	for _, id := range playground {
+	for rc, id := range playground {
 		if id != api.BLANK_ID {
-			// draw square
+			opt.GeoM.Translate(float64(rc[1]*squareWidth),
+				float64(rc[0]*squareHeight))
+			screen.DrawImage(squareSprite, opt)
+
+			opt.GeoM.Translate(-float64(rc[1]*squareWidth),
+				-float64(rc[0]*squareHeight))
 		}
 	}
 }

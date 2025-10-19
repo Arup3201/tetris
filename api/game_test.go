@@ -17,19 +17,19 @@ func TestGameStart(t *testing.T) {
 
 	// assert
 	// check wall
-	assert.Equal(t, 12, game.width)
-	assert.Equal(t, 22, game.height)
-	for c := range game.width {
+	assert.Equal(t, 12, game.columns)
+	assert.Equal(t, 22, game.rows)
+	for c := range game.columns {
 		assert.Equal(t, WALL_ID, game.grid[0][c])
-		assert.Equal(t, WALL_ID, game.grid[game.height-1][c])
+		assert.Equal(t, WALL_ID, game.grid[game.rows-1][c])
 	}
-	for r := range game.height {
+	for r := range game.rows {
 		assert.Equal(t, WALL_ID, game.grid[r][0])
-		assert.Equal(t, WALL_ID, game.grid[r][game.width-1])
+		assert.Equal(t, WALL_ID, game.grid[r][game.columns-1])
 	}
 	// playground should be empty
-	for r := range game.height - 2 {
-		for c := range game.width - 2 {
+	for r := range game.rows - 2 {
+		for c := range game.columns - 2 {
 			assert.Equal(t, BLANK_ID, game.grid[r+1][c+1])
 		}
 	}
@@ -47,13 +47,13 @@ func TestGetWall(t *testing.T) {
 
 	// assert
 	expectedWallCoordinates := [][2]int{}
-	for c := range game.width {
+	for c := range game.columns {
 		expectedWallCoordinates = append(expectedWallCoordinates, [2]int{0, c})
-		expectedWallCoordinates = append(expectedWallCoordinates, [2]int{game.height - 1, c})
+		expectedWallCoordinates = append(expectedWallCoordinates, [2]int{game.rows - 1, c})
 	}
-	for r := range game.height {
+	for r := range game.rows {
 		expectedWallCoordinates = append(expectedWallCoordinates, [2]int{r, 0})
-		expectedWallCoordinates = append(expectedWallCoordinates, [2]int{r, game.width - 1})
+		expectedWallCoordinates = append(expectedWallCoordinates, [2]int{r, game.columns - 1})
 	}
 	for _, want := range expectedWallCoordinates {
 		assert.Equal(t, true, slices.Contains(wall, want))
@@ -70,8 +70,8 @@ func TestGetPlayground(t *testing.T) {
 
 	// assert
 	expectedPlayground := map[[2]int]string{}
-	for r := range game.height - 2 {
-		for c := range game.width - 2 {
+	for r := range game.rows - 2 {
+		for c := range game.columns - 2 {
 			expectedPlayground[[2]int{r + 1, c + 1}] = BLANK_ID
 		}
 	}
@@ -151,4 +151,48 @@ func TestTetrisGoDownBy10(t *testing.T) {
 	}
 	got := game.GetTetrominoPosition()
 	assert.Equal(t, expectedTetromino["position"], got)
+}
+
+func TestTetrisHitGround(t *testing.T) {
+	// prepare
+	rows, columns := 20, 10
+	game := CreateGame(rows, columns)
+	tetrominoColor, tetrominoShape := COLOR_YELLOW, SHAPE_T
+	game.DropTetromino(tetrominoShape, tetrominoColor)
+
+	// act
+	for range 20 {
+		game.TetrominoFallsByOne()
+	}
+
+	// assert
+	assert.Equal(t, false, game.HasTetrominoDropped)
+	assert.Equal(t, SQUARE_ID, game.grid[20][6])
+	assert.Equal(t, SQUARE_ID, game.grid[19][6])
+	assert.Equal(t, SQUARE_ID, game.grid[19][7])
+	assert.Equal(t, SQUARE_ID, game.grid[19][5])
+}
+
+func TestTetrisHitAnotherTetris(t *testing.T) {
+	// prepare
+	rows, columns := 20, 10
+	game := CreateGame(rows, columns)
+	tetrominoColor, tetrominoShape := COLOR_YELLOW, SHAPE_T
+	game.DropTetromino(tetrominoShape, tetrominoColor)
+	for range 20 {
+		game.TetrominoFallsByOne()
+	}
+	game.DropTetromino(tetrominoShape, tetrominoColor)
+
+	// act
+	for range 20 {
+		game.TetrominoFallsByOne()
+	}
+
+	// assert
+	assert.Equal(t, false, game.HasTetrominoDropped)
+	assert.Equal(t, SQUARE_ID, game.grid[18][6])
+	assert.Equal(t, SQUARE_ID, game.grid[17][6])
+	assert.Equal(t, SQUARE_ID, game.grid[17][7])
+	assert.Equal(t, SQUARE_ID, game.grid[17][5])
 }

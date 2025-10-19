@@ -46,13 +46,9 @@ func (t *tTetromino) drop() {
 	}
 }
 
-func (t *tTetromino) fallByOne() {
-	if t.coordinates[0][0] == -1 {
-		log.Fatal("Tetromino piece has not yet been dropped inside the playground")
-	}
-
+func (t *tTetromino) fallByOne(playground [][]string) {
 	// tetromino touched the ground
-	if t.coordinates[0][0] >= t.playgroundDimension[0]-1 {
+	if t.hasHit(playground) {
 		return
 	}
 
@@ -78,4 +74,18 @@ func (t *tTetromino) fallByOne() {
 	} else {
 		t.coordinates[3][0]++
 	}
+}
+
+func (t *tTetromino) hasHit(playground [][]string) bool {
+	if t.coordinates[0][0] == t.playgroundDimension[0]-1 {
+		return true
+	}
+
+	if (t.coordinates[0][0] != -1 && playground[t.coordinates[0][0]+1][t.coordinates[0][1]] == SQUARE_ID) ||
+		(t.coordinates[2][0] != -1 && playground[t.coordinates[2][0]+1][t.coordinates[2][1]] == SQUARE_ID) ||
+		(t.coordinates[3][0] != -1 && playground[t.coordinates[3][0]+1][t.coordinates[3][1]] == SQUARE_ID) {
+		return true
+	}
+
+	return false
 }
