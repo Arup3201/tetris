@@ -29,6 +29,8 @@ func (t *tetrominoGui) Update() error {
 			t.transitionCount -= 10
 		} else if ebiten.IsKeyPressed(ebiten.KeyRight) {
 			t.gameApi.MoveTetrominoRight()
+		} else if ebiten.IsKeyPressed(ebiten.KeyLeft) {
+			t.gameApi.MoveTetrominoLeft()
 		}
 		t.transitionCount--
 	} else {

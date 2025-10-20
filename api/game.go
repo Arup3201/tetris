@@ -12,6 +12,7 @@ type tetromino interface {
 	drop()
 	fallByOne([][]string)
 	moveRightByOne([][]string)
+	moveLeftByOne([][]string)
 	hasHit([][]string) bool
 }
 
@@ -101,11 +102,7 @@ func (g *Game) DropTetromino(shape, color string) {
 	g.HasTetrominoDropped = true
 }
 
-func (g *Game) TetrominoFallsByOne() {
-	if !g.HasTetrominoDropped {
-		return
-	}
-
+func (g *Game) getGridPlayground() [][]string {
 	playground := make([][]string, g.rows-2)
 	for r := range playground {
 		playground[r] = make([]string, g.columns-2)
@@ -115,7 +112,15 @@ func (g *Game) TetrominoFallsByOne() {
 			playground[r-1][c-1] = g.grid[r][c]
 		}
 	}
+	return playground
+}
 
+func (g *Game) TetrominoFallsByOne() {
+	if !g.HasTetrominoDropped {
+		return
+	}
+
+	playground := g.getGridPlayground()
 	g.droppingTetromino.fallByOne(playground)
 
 	if g.droppingTetromino.hasHit(playground) {
@@ -130,15 +135,11 @@ func (g *Game) TetrominoFallsByOne() {
 }
 
 func (g *Game) MoveTetrominoRight() {
-	playground := make([][]string, g.rows-2)
-	for r := range playground {
-		playground[r] = make([]string, g.columns-2)
-	}
-	for r := 1; r <= g.rows-2; r++ {
-		for c := 1; c <= g.columns-2; c++ {
-			playground[r-1][c-1] = g.grid[r][c]
-		}
-	}
-
+	playground := g.getGridPlayground()
 	g.droppingTetromino.moveRightByOne(playground)
+}
+
+func (g *Game) MoveTetrominoLeft() {
+	playground := g.getGridPlayground()
+	g.droppingTetromino.moveLeftByOne(playground)
 }
