@@ -5,13 +5,37 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+const (
+	MaxTransitionCount = 40
+)
+
 type tetrominoGui struct {
-	gameApi *api.Game
+	gameApi         *api.Game
+	transitionCount int
+}
+
+func createTetrominoGui(g *api.Game) *tetrominoGui {
+	return &tetrominoGui{
+		gameApi:         g,
+		transitionCount: MaxTransitionCount,
+	}
 }
 
 func (t *tetrominoGui) Update() error {
 	if !t.gameApi.HasTetrominoDropped {
 		t.gameApi.DropTetromino(api.SHAPE_T, api.COLOR_YELLOW)
+	} else if t.transitionCount > 0 {
+		if ebiten.IsKeyPressed(ebiten.KeyDown) {
+			t.transitionCount -= 10
+		} else if ebiten.IsKeyPressed(ebiten.KeyRight) {
+			t.gameApi.MoveTetrominoRight()
+		} else if ebiten.IsKeyPressed(ebiten.KeyLeft) {
+			t.gameApi.MoveTetrominoLeft()
+		}
+		t.transitionCount--
+	} else {
+		t.gameApi.TetrominoFallsByOne()
+		t.transitionCount = MaxTransitionCount
 	}
 	return nil
 }
