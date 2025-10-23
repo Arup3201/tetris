@@ -17,7 +17,7 @@ func createTetrimino(shape string) TetriminoInterface {
 }
 
 type TetriminoInterface interface {
-	Spawn([][]string)
+	Spawn(tetrimino.MatrixSetFunc)
 }
 
 type Game struct {
@@ -28,7 +28,7 @@ type Game struct {
 }
 
 func CreateGame() *Game {
-	totalRows, totalColumns := 20, 10
+	totalRows, totalColumns := 22, 10
 
 	grid := make([][]string, totalRows)
 	for r := range totalRows {
@@ -49,7 +49,31 @@ func CreateGame() *Game {
 	}
 }
 
+func (g *Game) At(row, column int) string {
+	if row < 1 || row > g.rows {
+		panic("game matrix rows out of bound")
+	}
+	if column < 1 || column > g.columns {
+		panic("game matrix columns out of bound")
+	}
+
+	return g.playfield[g.rows-row][column-1]
+}
+
+func (g *Game) SetAt(row, column int, value string) {
+	if row < 1 || row > g.rows {
+		panic("game matrix rows out of bound")
+	}
+	if column < 1 || column > g.columns {
+		panic("game matrix columns out of bound")
+	}
+
+	g.playfield[g.rows-row][column-1] = value
+}
+
 func (g *Game) SpawnTetrimino(shape string) {
 	g.spawned = createTetrimino(shape)
-	g.spawned.Spawn(g.playfield)
+	g.spawned.Spawn(func(r, c int) {
+		g.SetAt(r, c, shape)
+	})
 }

@@ -1,5 +1,7 @@
 package tetrimino
 
+type MatrixSetFunc func(r, c int)
+
 type ITetrimino struct {
 	BoundingBox [4][4]uint8
 	name        string
@@ -17,12 +19,9 @@ func CreateITetrimino(name string) *ITetrimino {
 	}
 }
 
-func (t *ITetrimino) Spawn(matrix [][]string) {
-	for r := range 4 {
-		for c := range 4 {
-			if t.BoundingBox[r][c] == 1 {
-				matrix[r][c] = t.name
-			}
-		}
-	}
+func (t *ITetrimino) Spawn(fn MatrixSetFunc) {
+	fn(21, 4)
+	fn(21, 5)
+	fn(21, 6)
+	fn(21, 7)
 }
