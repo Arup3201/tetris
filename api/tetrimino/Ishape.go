@@ -1,10 +1,12 @@
 package tetrimino
 
+import "github.com/Arup3201/tetris/api/matrix"
+
 type MatrixSetFunc func(r, c int)
 
 type ITetrimino struct {
 	BoundingBox [4][4]uint8
-	name        string
+	Name        string
 }
 
 func CreateITetrimino(name string) *ITetrimino {
@@ -15,13 +17,13 @@ func CreateITetrimino(name string) *ITetrimino {
 			{0, 0, 0, 0},
 			{0, 0, 0, 0},
 		},
-		name: name,
+		Name: name,
 	}
 }
 
-func (t *ITetrimino) Spawn(fn MatrixSetFunc) {
-	fn(21, 4)
-	fn(21, 5)
-	fn(21, 6)
-	fn(21, 7)
+func (t *ITetrimino) Spawn(matrix *matrix.ReverseMatrix) {
+	matrix.Set(21, 4, t.Name)
+	matrix.Set(21, 5, t.Name)
+	matrix.Set(21, 6, t.Name)
+	matrix.Set(21, 7, t.Name)
 }

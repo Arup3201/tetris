@@ -19,26 +19,37 @@ func TestGameStart(t *testing.T) {
 		assert.Equal(t, 22, game.rows) // extra 2 rows for spawning tetrimino
 		for r := range game.rows {
 			for c := range game.columns {
-				assert.Equal(t, BLANK_ID, game.playfield[r][c])
+				assert.Equal(t, BLANK_ID, game.playfield.Matrix[r][c])
 			}
 		}
 		// score should be 0
 		assert.Equal(t, 0, game.score)
 	})
-	t.Run("game playfield coordinates are transformed correctly", func(t *testing.T) {
+	t.Run("game playfield set success", func(t *testing.T) {
 		// prepare
 		game := CreateGame()
 
 		// act
-		game.playfield[0][3] = SHAPE_I
+		game.SetPlayfield(22, 4, SHAPE_I)
 
 		// assert
-		assert.Equal(t, SHAPE_I, game.At(22, 4))
+		assert.Equal(t, SHAPE_I, game.playfield.Matrix[0][3])
+	})
+	t.Run("game playfield get success", func(t *testing.T) {
+		// prepare
+		game := CreateGame()
+		game.SetPlayfield(22, 4, SHAPE_I)
+
+		// act
+		got := game.GetPlayfield(22, 4)
+
+		// assert
+		assert.Equal(t, SHAPE_I, got)
 	})
 }
 
 func TestTetriminoSpawn(t *testing.T) {
-	t.Run("T tetrimino spawn at horizontally at 22 row", func(t *testing.T) {
+	t.Run("T tetrimino spawn at horizontally at 21 row", func(t *testing.T) {
 		// prepare
 		game := CreateGame()
 
@@ -46,9 +57,48 @@ func TestTetriminoSpawn(t *testing.T) {
 		game.SpawnTetrimino(SHAPE_I)
 
 		// assert
-		assert.Equal(t, SHAPE_I, game.At(21, 4))
-		assert.Equal(t, SHAPE_I, game.At(21, 5))
-		assert.Equal(t, SHAPE_I, game.At(21, 6))
-		assert.Equal(t, SHAPE_I, game.At(21, 7))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(22, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(22, 5))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(22, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(22, 7))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(21, 4))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(21, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(21, 6))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(21, 7))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(20, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(20, 5))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(20, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(20, 7))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 5))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 7))
+	})
+	t.Run("T tetrimino spawns but previous tetrimino at 20 and 19 row", func(t *testing.T) {
+		// prepare
+		game := CreateGame()
+		game.SetPlayfield(20, 4, SHAPE_I)
+		game.SetPlayfield(19, 4, SHAPE_I)
+
+		// act
+		game.SpawnTetrimino(SHAPE_I)
+
+		// assert
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(22, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(22, 5))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(22, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(22, 7))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(21, 4))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(21, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(21, 6))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(21, 7))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(20, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(20, 5))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(20, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(20, 7))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(19, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 5))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 7))
 	})
 }
