@@ -1,145 +1,79 @@
 package api
 
-const (
-	WALL_ID      = "wall"
-	BLANK_ID     = "blank"
-	SQUARE_ID    = "square"
-	COLOR_YELLOW = "yellow"
+import (
+	"github.com/Arup3201/tetris/api/matrix"
+	"github.com/Arup3201/tetris/api/tetrimino"
 )
 
-type tetromino interface {
-	getPosition() [4][2]int
-	drop()
-	fallByOne([][]string)
-	moveRightByOne([][]string)
-	moveLeftByOne([][]string)
-	hasHit([][]string) bool
+const (
+	BLANK_ID       = "blank"
+	SHAPE_I        = "I"
+	SHAPE_J        = "J"
+	SHAPE_L        = "L"
+	SHAPE_O        = "O"
+	SHAPE_S        = "S"
+	SHAPE_Z        = "Z"
+	SHAPE_T        = "T"
+	MATRIX_ROWS    = 22
+	MATRIX_COLUMNS = 10
+)
+
+func createTetrimino(shape string) TetriminoInterface {
+	switch shape {
+	case SHAPE_I:
+		return tetrimino.CreateITetrimino(SHAPE_I)
+	}
+
+	return nil
+}
+
+type TetriminoInterface interface {
+	Spawn(*matrix.ReverseMatrix, string) bool
 }
 
 type Game struct {
-	rows, columns     int
-	grid              [][]string
-	score             int
-	droppingTetromino tetromino
-
-	HasTetrominoDropped bool
+	rows, columns int
+	playfield     *matrix.ReverseMatrix
+	score         int
+	spawned       TetriminoInterface
 }
 
-func CreateGame(gamePlaygroundRows, gamePlaygroundColumns int) *Game {
-	totalRows := gamePlaygroundRows + 2
-	totalColumns := gamePlaygroundColumns + 2
-
-	grid := make([][]string, totalRows)
-	for r := range totalRows {
-		grid[r] = make([]string, totalColumns)
-	}
-
-	for c := range totalColumns {
-		grid[0][c] = WALL_ID
-		grid[totalRows-1][c] = WALL_ID
-	}
-	for r := range totalRows {
-		grid[r][0] = WALL_ID
-		grid[r][totalColumns-1] = WALL_ID
-	}
-
-	for r := range totalRows - 2 {
-		for c := range totalColumns - 2 {
-			grid[r+1][c+1] = BLANK_ID
-		}
-	}
-
+func CreateGame() *Game {
 	return &Game{
-		rows:    totalRows,
-		columns: totalColumns,
-		grid:    grid,
-		score:   0,
+		rows:      MATRIX_ROWS,
+		columns:   MATRIX_COLUMNS,
+		playfield: matrix.CreateReverseMatrix(MATRIX_ROWS, MATRIX_COLUMNS, BLANK_ID),
+		score:     0,
 	}
 }
 
-func (g *Game) GetWallCoordinates() [][2]int {
-	coordinates := [][2]int{}
-	for r := range g.rows {
-		for c := range g.columns {
-			if g.grid[r][c] == WALL_ID {
-				coordinates = append(coordinates, [2]int{r, c})
-			}
-		}
-	}
-
-	return coordinates
-}
-
-func (g *Game) GetPlayground() map[[2]int]string {
-	playground := make(map[[2]int]string, 0)
-	for r := range g.rows {
-		for c := range g.columns {
-			if g.grid[r][c] != WALL_ID {
-				playground[[2]int{r, c}] = g.grid[r][c]
-			}
-		}
-	}
-
-	return playground
-}
-
-func (g *Game) GetTetrominoPosition() [4][2]int {
-	coordinates := g.droppingTetromino.getPosition()
-	// consider the walls
-	for i := range coordinates {
-		if coordinates[i][0] != -1 { // coordinates[i][1] != -1
-			coordinates[i][0] += 1
-			coordinates[i][1] += 1
-		}
-	}
-	return coordinates
-}
-
-func (g *Game) DropTetromino(shape, color string) {
-	// tetromino does not consider walls internally
-	g.droppingTetromino = newTetromino(shape, color, [2]int{g.rows - 2, g.columns - 2})
-	g.droppingTetromino.drop()
-	g.HasTetrominoDropped = true
-}
-
-func (g *Game) getGridPlayground() [][]string {
-	playground := make([][]string, g.rows-2)
-	for r := range playground {
-		playground[r] = make([]string, g.columns-2)
-	}
-	for r := 1; r <= g.rows-2; r++ {
-		for c := 1; c <= g.columns-2; c++ {
-			playground[r-1][c-1] = g.grid[r][c]
-		}
-	}
-	return playground
-}
-
-func (g *Game) TetrominoFallsByOne() {
-	if !g.HasTetrominoDropped {
-		return
-	}
-
-	playground := g.getGridPlayground()
-	g.droppingTetromino.fallByOne(playground)
-
-	if g.droppingTetromino.hasHit(playground) {
-		coordinates := g.GetTetrominoPosition()
-		g.grid[coordinates[0][0]][coordinates[0][1]] = SQUARE_ID
-		g.grid[coordinates[1][0]][coordinates[1][1]] = SQUARE_ID
-		g.grid[coordinates[2][0]][coordinates[2][1]] = SQUARE_ID
-		g.grid[coordinates[3][0]][coordinates[3][1]] = SQUARE_ID
-
-		g.HasTetrominoDropped = false
+func (g *Game) SetPlayfield(row, column int, value string) {
+	ok := g.playfield.Set(row, column, value)
+	if !ok {
+		panic("error setting value to game playground")
 	}
 }
 
-func (g *Game) MoveTetrominoRight() {
-	playground := g.getGridPlayground()
-	g.droppingTetromino.moveRightByOne(playground)
+func (g *Game) GetPlayfield(row, column int) string {
+	got, ok := g.playfield.Get(row, column)
+
+	if !ok {
+		panic("error getting value to game playground")
+	}
+
+	return got
 }
 
-func (g *Game) MoveTetrominoLeft() {
-	playground := g.getGridPlayground()
-	g.droppingTetromino.moveLeftByOne(playground)
+func (g *Game) SpawnTetrimino(shape string) bool {
+	g.spawned = createTetrimino(shape)
+	if ok := g.spawned.Spawn(g.playfield, BLANK_ID); !ok {
+		g.spawned = nil
+		return false
+	}
+
+	return true
+}
+
+func (g *Game) HasSpawned() bool {
+	return g.spawned != nil
 }

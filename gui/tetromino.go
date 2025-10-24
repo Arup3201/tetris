@@ -22,36 +22,12 @@ func createTetrominoGui(g *api.Game) *tetrominoGui {
 }
 
 func (t *tetrominoGui) Update() error {
-	if !t.gameApi.HasTetrominoDropped {
-		t.gameApi.DropTetromino(api.SHAPE_T, api.COLOR_YELLOW)
-	} else if t.transitionCount > 0 {
-		if ebiten.IsKeyPressed(ebiten.KeyDown) {
-			t.transitionCount -= 10
-		} else if ebiten.IsKeyPressed(ebiten.KeyRight) {
-			t.gameApi.MoveTetrominoRight()
-		} else if ebiten.IsKeyPressed(ebiten.KeyLeft) {
-			t.gameApi.MoveTetrominoLeft()
-		}
-		t.transitionCount--
-	} else {
-		t.gameApi.TetrominoFallsByOne()
-		t.transitionCount = MaxTransitionCount
+	if !t.gameApi.HasSpawned() {
+		t.gameApi.SpawnTetrimino(api.SHAPE_I)
 	}
 	return nil
 }
 
 func (t *tetrominoGui) Draw(screen *ebiten.Image) {
-	coordinates := t.gameApi.GetTetrominoPosition()
-	opt := &ebiten.DrawImageOptions{}
 
-	for _, rc := range coordinates {
-		if rc[0] != -1 { // rc[1] != -1
-			opt.GeoM.Translate(float64(rc[1]*squareWidth),
-				float64(rc[0]*squareHeight))
-			screen.DrawImage(squareSprite, opt)
-
-			opt.GeoM.Translate(-float64(rc[1]*squareWidth),
-				-float64(rc[0]*squareHeight))
-		}
-	}
 }

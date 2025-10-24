@@ -1,6 +1,7 @@
 package gui
 
 import (
+	"image"
 	"image/color"
 
 	"github.com/Arup3201/tetris/api"
@@ -9,64 +10,61 @@ import (
 )
 
 var (
-	squareSprite = mustLoadImage("assets/square.png")
-	squareHeight = squareSprite.Bounds().Dy()
-	squareWidth  = squareSprite.Bounds().Dx()
+	TetriminoSheet = mustLoadImage("assets/tetrominoes.png")
+	BlockWidth     = 37
+	BlockHeight    = 37
 )
 
 type playgroundGui struct {
 	gameApi          *api.Game
 	playgroundSprite *ebiten.Image
+	blocks           map[string]*ebiten.Image
 }
 
-func createPlaygroundGUI(g *api.Game, rows, columns int) *playgroundGui {
-	sprite := ebiten.NewImage(columns*squareWidth, rows*squareHeight)
+func createPlaygroundGUI(g *api.Game) *playgroundGui {
+	columns, rows := api.MATRIX_COLUMNS, api.MATRIX_ROWS
+	sprite := ebiten.NewImage(columns*BlockWidth, rows*BlockWidth)
+	vector.DrawFilledRect(sprite,
+		0, 0, float32(columns*BlockWidth), float32(rows*BlockHeight),
+		color.RGBA{212, 212, 212, 255}, true)
 	for r := range rows {
-		if r == 0 {
-			continue
+		for c := range columns {
+			vector.DrawFilledRect(sprite,
+				float32(c*BlockWidth), float32(r*BlockHeight), float32(BlockWidth-2), float32(BlockHeight-2),
+				color.RGBA{245, 245, 245, 255}, true)
 		}
-		vector.StrokeLine(sprite, 0, float32(r*squareHeight), float32(columns*squareWidth), float32(r*squareHeight), 1, color.RGBA{
-			R: 127,
-			G: 127,
-			B: 127,
-			A: 1,
-		}, false)
 	}
-	for c := range columns {
-		if c == 0 {
-			continue
-		}
-		vector.StrokeLine(sprite, float32(c*squareWidth), 0, float32(c*squareWidth), float32(rows*squareHeight), 1, color.RGBA{
-			R: 127,
-			G: 127,
-			B: 127,
-			A: 1,
-		}, false)
+
+	blocks := map[string]*ebiten.Image{
+		api.SHAPE_I: TetriminoSheet.SubImage(image.Rect(0, BlockHeight, BlockWidth, 2*BlockHeight)).(*ebiten.Image),
+		api.SHAPE_J: TetriminoSheet.SubImage(image.Rect(5*BlockWidth, BlockHeight, 6*BlockWidth, 2*BlockHeight)).(*ebiten.Image),
+		api.SHAPE_L: TetriminoSheet.SubImage(image.Rect(9*BlockWidth, BlockHeight, 10*BlockWidth, 2*BlockHeight)).(*ebiten.Image),
+		api.SHAPE_O: TetriminoSheet.SubImage(image.Rect(13*BlockWidth, BlockHeight, 14*BlockWidth, 2*BlockHeight)).(*ebiten.Image),
+		api.SHAPE_S: TetriminoSheet.SubImage(image.Rect(16*BlockWidth, BlockHeight, 17*BlockWidth, 2*BlockHeight)).(*ebiten.Image),
+		api.SHAPE_Z: TetriminoSheet.SubImage(image.Rect(21*BlockWidth, BlockHeight, 22*BlockWidth, 2*BlockHeight)).(*ebiten.Image),
+		api.SHAPE_T: TetriminoSheet.SubImage(image.Rect(24*BlockWidth, BlockHeight, 25*BlockWidth, 2*BlockHeight)).(*ebiten.Image),
 	}
 
 	return &playgroundGui{
 		gameApi:          g,
 		playgroundSprite: sprite,
+		blocks:           blocks,
 	}
 }
 
 func (p *playgroundGui) Draw(screen *ebiten.Image) {
-	playground := p.gameApi.GetPlayground()
+	screen.DrawImage(p.playgroundSprite, nil)
 	opt := &ebiten.DrawImageOptions{}
 
-	// move after the wall
-	opt.GeoM.Translate(float64(wallBlockWidth), float64(wallBlockHeight))
-	screen.DrawImage(p.playgroundSprite, opt)
-	opt.GeoM.Translate(-float64(wallBlockWidth), -float64(wallBlockHeight))
+	for r := 1; r <= api.MATRIX_ROWS; r++ {
+		for c := 1; c <= api.MATRIX_COLUMNS; c++ {
+			if cell := p.gameApi.GetPlayfield(r, c); cell != api.BLANK_ID {
+				row, column := api.MATRIX_ROWS-r, c-1
+				opt.GeoM.Translate(float64(column*BlockWidth), float64(row*BlockHeight))
+				screen.DrawImage(p.blocks[cell], opt)
 
-	for rc, id := range playground {
-		if id != api.BLANK_ID {
-			opt.GeoM.Translate(float64(rc[1]*squareWidth),
-				float64(rc[0]*squareHeight))
-			screen.DrawImage(squareSprite, opt)
-
-			opt.GeoM.Translate(-float64(rc[1]*squareWidth),
-				-float64(rc[0]*squareHeight))
+				opt.GeoM.Translate(-float64(column*BlockWidth), -float64(row*BlockHeight))
+			}
 		}
 	}
 }
