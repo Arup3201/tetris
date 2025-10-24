@@ -73,3 +73,7 @@ func (g *Game) SpawnTetrimino(shape string) bool {
 
 	return true
 }
+
+func (g *Game) HasSpawned() bool {
+	return g.spawned != nil
+}
