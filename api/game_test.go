@@ -101,4 +101,16 @@ func TestTetriminoSpawn(t *testing.T) {
 		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 6))
 		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 7))
 	})
+	t.Run("T tetrimino spawn but already occupied 21 row", func(t *testing.T) {
+		// prepare
+		game := CreateGame()
+		game.SetPlayfield(21, 4, SHAPE_I)
+
+		// act
+		ok := game.SpawnTetrimino(SHAPE_I)
+
+		// assert
+		assert.Equal(t, false, ok)
+		assert.Equal(t, nil, game.spawned)
+	})
 }

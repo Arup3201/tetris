@@ -20,7 +20,7 @@ func createTetrimino(shape string) TetriminoInterface {
 }
 
 type TetriminoInterface interface {
-	Spawn(*matrix.ReverseMatrix)
+	Spawn(*matrix.ReverseMatrix, string) bool
 }
 
 type Game struct {
@@ -58,7 +58,12 @@ func (g *Game) GetPlayfield(row, column int) string {
 	return got
 }
 
-func (g *Game) SpawnTetrimino(shape string) {
+func (g *Game) SpawnTetrimino(shape string) bool {
 	g.spawned = createTetrimino(shape)
-	g.spawned.Spawn(g.playfield)
+	if ok := g.spawned.Spawn(g.playfield, BLANK_ID); !ok {
+		g.spawned = nil
+		return false
+	}
+
+	return true
 }
