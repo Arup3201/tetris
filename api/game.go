@@ -6,8 +6,16 @@ import (
 )
 
 const (
-	BLANK_ID = "blank"
-	SHAPE_I  = "I"
+	BLANK_ID       = "blank"
+	SHAPE_I        = "I"
+	SHAPE_J        = "J"
+	SHAPE_L        = "L"
+	SHAPE_O        = "O"
+	SHAPE_S        = "S"
+	SHAPE_Z        = "Z"
+	SHAPE_T        = "T"
+	MATRIX_ROWS    = 22
+	MATRIX_COLUMNS = 10
 )
 
 func createTetrimino(shape string) TetriminoInterface {
@@ -31,12 +39,10 @@ type Game struct {
 }
 
 func CreateGame() *Game {
-	totalRows, totalColumns := 22, 10
-
 	return &Game{
-		rows:      totalRows,
-		columns:   totalColumns,
-		playfield: matrix.CreateReverseMatrix(totalRows, totalColumns, BLANK_ID),
+		rows:      MATRIX_ROWS,
+		columns:   MATRIX_COLUMNS,
+		playfield: matrix.CreateReverseMatrix(MATRIX_ROWS, MATRIX_COLUMNS, BLANK_ID),
 		score:     0,
 	}
 }

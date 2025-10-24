@@ -13,10 +13,9 @@ type game struct {
 	tetromino     *tetrominoGui
 }
 
-func CreateGame(gamePlaygroundGridRows, gamePlaygroundGridColumns int,
-	gameWindowWidth, gameWindowHeight int,
+func CreateGame(gameWindowWidth, gameWindowHeight int,
 	gameWallOffsetX, gameWallOffsetY int) *game {
-	g := api.CreateGame(gamePlaygroundGridRows, gamePlaygroundGridColumns)
+	g := api.CreateGame()
 	return &game{
 		width:   gameWindowWidth,
 		height:  gameWindowHeight,
@@ -24,10 +23,8 @@ func CreateGame(gamePlaygroundGridRows, gamePlaygroundGridColumns int,
 		wall: &wallGui{
 			gameApi: g,
 		},
-		playground: createPlaygroundGUI(g,
-			gamePlaygroundGridRows,
-			gamePlaygroundGridColumns),
-		tetromino: createTetrominoGui(g),
+		playground: createPlaygroundGUI(g),
+		tetromino:  createTetrominoGui(g),
 	}
 }
 

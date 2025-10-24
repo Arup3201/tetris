@@ -8,40 +8,23 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
-var (
-	squareSprite = mustLoadImage("assets/square.png")
-	squareHeight = squareSprite.Bounds().Dy()
-	squareWidth  = squareSprite.Bounds().Dx()
-)
-
 type playgroundGui struct {
 	gameApi          *api.Game
 	playgroundSprite *ebiten.Image
 }
 
-func createPlaygroundGUI(g *api.Game, rows, columns int) *playgroundGui {
-	sprite := ebiten.NewImage(columns*squareWidth, rows*squareHeight)
+func createPlaygroundGUI(g *api.Game) *playgroundGui {
+	columns, rows := api.MATRIX_COLUMNS, api.MATRIX_ROWS
+	sprite := ebiten.NewImage(columns*BlockWidth, rows*BlockWidth)
+	vector.DrawFilledRect(sprite,
+		0, 0, float32(columns*BlockWidth), float32(rows*BlockHeight),
+		color.RGBA{212, 212, 212, 255}, true)
 	for r := range rows {
-		if r == 0 {
-			continue
+		for c := range columns {
+			vector.DrawFilledRect(sprite,
+				float32(c*BlockWidth), float32(r*BlockHeight), float32(BlockWidth-2), float32(BlockHeight-2),
+				color.RGBA{245, 245, 245, 255}, true)
 		}
-		vector.StrokeLine(sprite, 0, float32(r*squareHeight), float32(columns*squareWidth), float32(r*squareHeight), 1, color.RGBA{
-			R: 127,
-			G: 127,
-			B: 127,
-			A: 1,
-		}, false)
-	}
-	for c := range columns {
-		if c == 0 {
-			continue
-		}
-		vector.StrokeLine(sprite, float32(c*squareWidth), 0, float32(c*squareWidth), float32(rows*squareHeight), 1, color.RGBA{
-			R: 127,
-			G: 127,
-			B: 127,
-			A: 1,
-		}, false)
 	}
 
 	return &playgroundGui{
@@ -51,22 +34,5 @@ func createPlaygroundGUI(g *api.Game, rows, columns int) *playgroundGui {
 }
 
 func (p *playgroundGui) Draw(screen *ebiten.Image) {
-	playground := p.gameApi.GetPlayground()
-	opt := &ebiten.DrawImageOptions{}
-
-	// move after the wall
-	opt.GeoM.Translate(float64(wallBlockWidth), float64(wallBlockHeight))
-	screen.DrawImage(p.playgroundSprite, opt)
-	opt.GeoM.Translate(-float64(wallBlockWidth), -float64(wallBlockHeight))
-
-	for rc, id := range playground {
-		if id != api.BLANK_ID {
-			opt.GeoM.Translate(float64(rc[1]*squareWidth),
-				float64(rc[0]*squareHeight))
-			screen.DrawImage(squareSprite, opt)
-
-			opt.GeoM.Translate(-float64(rc[1]*squareWidth),
-				-float64(rc[0]*squareHeight))
-		}
-	}
+	screen.DrawImage(p.playgroundSprite, nil)
 }
