@@ -37,3 +37,21 @@ func (t *ITetrimino) Spawn(matrix *matrix.ReverseMatrix, emptyCellValue string) 
 	matrix.Set(t.top-1, t.left+3, t.name)
 	return true
 }
+
+func (t *ITetrimino) DropByOne(matrix *matrix.ReverseMatrix, emptyCellValue string) bool {
+	if t.top == 2 {
+		return false
+	}
+
+	matrix.Set(t.top-1, t.left, emptyCellValue)
+	matrix.Set(t.top-1, t.left+1, emptyCellValue)
+	matrix.Set(t.top-1, t.left+2, emptyCellValue)
+	matrix.Set(t.top-1, t.left+3, emptyCellValue)
+
+	t.top--
+	matrix.Set(t.top-1, t.left, t.name)
+	matrix.Set(t.top-1, t.left+1, t.name)
+	matrix.Set(t.top-1, t.left+2, t.name)
+	matrix.Set(t.top-1, t.left+3, t.name)
+	return true
+}

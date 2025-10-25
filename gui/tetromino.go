@@ -24,6 +24,8 @@ func createTetrominoGui(g *api.Game) *tetrominoGui {
 func (t *tetrominoGui) Update() error {
 	if !t.gameApi.HasSpawned() {
 		t.gameApi.SpawnTetrimino(api.SHAPE_I)
+	} else {
+		t.gameApi.DropByOne()
 	}
 	return nil
 }
