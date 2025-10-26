@@ -196,4 +196,72 @@ func TestTetriminoDropByOne(t *testing.T) {
 		assert.Equal(t, SHAPE_I, game.GetPlayfield(1, 6))
 		assert.Equal(t, SHAPE_I, game.GetPlayfield(1, 7))
 	})
+	t.Run("drop tetrimino by one till it stops before the tetrimino at floor", func(t *testing.T) {
+		// prepare
+		game := CreateGame()
+		game.SetPlayfield(1, 4, SHAPE_I)
+		game.SetPlayfield(1, 5, SHAPE_I)
+		game.SetPlayfield(1, 6, SHAPE_I)
+		game.SetPlayfield(1, 7, SHAPE_I)
+		game.SpawnTetrimino(SHAPE_I)
+
+		// act
+		var got bool
+		for range 20 {
+			got = game.DropByOne()
+		}
+
+		// assert
+		assert.Equal(t, got, false)
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(3, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(3, 5))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(3, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(3, 7))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(2, 4))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(2, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(2, 6))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(2, 7))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(1, 4))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(1, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(1, 6))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(1, 7))
+	})
+	t.Run("drop tetrimino by one till it stops before 2 stacked tetriminoes at floor", func(t *testing.T) {
+		// prepare
+		game := CreateGame()
+		game.SetPlayfield(1, 4, SHAPE_I)
+		game.SetPlayfield(1, 5, SHAPE_I)
+		game.SetPlayfield(1, 6, SHAPE_I)
+		game.SetPlayfield(1, 7, SHAPE_I)
+		game.SetPlayfield(2, 4, SHAPE_I)
+		game.SetPlayfield(2, 5, SHAPE_I)
+		game.SetPlayfield(2, 6, SHAPE_I)
+		game.SetPlayfield(2, 7, SHAPE_I)
+		game.SpawnTetrimino(SHAPE_I)
+
+		// act
+		var got bool
+		for range 20 {
+			got = game.DropByOne()
+		}
+
+		// assert
+		assert.Equal(t, got, false)
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(4, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(4, 5))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(4, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(4, 7))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(3, 4))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(3, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(3, 6))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(3, 7))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(2, 4))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(2, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(2, 6))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(2, 7))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(1, 4))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(1, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(1, 6))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(1, 7))
+	})
 }

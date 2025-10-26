@@ -80,6 +80,10 @@ func (g *Game) HasSpawned() bool {
 }
 
 func (g *Game) DropByOne() bool {
+	if g.spawned == nil {
+		return false
+	}
+
 	droppable := g.spawned.DropByOne(g.playfield, BLANK_ID)
 
 	if !droppable {

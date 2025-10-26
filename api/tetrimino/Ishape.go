@@ -43,6 +43,14 @@ func (t *ITetrimino) DropByOne(matrix *matrix.ReverseMatrix, emptyCellValue stri
 		return false
 	}
 
+	x1, _ := matrix.Get(t.top-2, t.left)
+	x2, _ := matrix.Get(t.top-2, t.left+1)
+	x3, _ := matrix.Get(t.top-2, t.left+2)
+	x4, _ := matrix.Get(t.top-2, t.left+3)
+	if x1 != emptyCellValue || x2 != emptyCellValue || x3 != emptyCellValue || x4 != emptyCellValue {
+		return false
+	}
+
 	matrix.Set(t.top-1, t.left, emptyCellValue)
 	matrix.Set(t.top-1, t.left+1, emptyCellValue)
 	matrix.Set(t.top-1, t.left+2, emptyCellValue)
