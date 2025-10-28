@@ -24,14 +24,20 @@ func init() {
 	mplusFaceSource = s
 }
 
+const (
+	MAX_TICKS = 60 // seconds per drop
+)
+
 type tetrominoGui struct {
 	gameApi    *api.Game
 	isGameOver bool
+	ticks      int
 }
 
 func createTetrominoGui(g *api.Game) *tetrominoGui {
 	return &tetrominoGui{
 		gameApi: g,
+		ticks:   0,
 	}
 }
 
@@ -43,7 +49,12 @@ func (t *tetrominoGui) Update() error {
 				t.isGameOver = true
 			}
 		} else {
-			t.gameApi.DropByOne()
+			if t.ticks < MAX_TICKS {
+				t.ticks++
+			} else {
+				t.ticks = 0
+				t.gameApi.DropByOne()
+			}
 		}
 	}
 
