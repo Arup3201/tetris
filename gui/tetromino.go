@@ -8,6 +8,7 @@ import (
 	"github.com/Arup3201/tetris/api"
 	"github.com/hajimehoshi/ebiten/examples/resources/fonts"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"golang.org/x/text/language"
 )
@@ -50,6 +51,12 @@ func (t *tetrominoGui) Update() error {
 			}
 		} else {
 			if t.ticks < MAX_TICKS {
+				switch {
+				case inpututil.IsKeyJustPressed(ebiten.KeyDown): // drop to ground
+					t.gameApi.DropTetriminoToGround()
+				case inpututil.IsKeyJustPressed(ebiten.KeyR): // rotate
+					t.gameApi.RotateTetriminoClockwise()
+				}
 				t.ticks++
 			} else {
 				t.ticks = 0

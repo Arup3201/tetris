@@ -48,8 +48,17 @@ func TestGameStart(t *testing.T) {
 	})
 }
 
+func AssertPlayfield(t testing.TB, game *Game, rowStart int, colStart int, expected [4][4]string) {
+	for r := range 4 {
+		for c := range 4 {
+			value := game.GetPlayfield(r, c)
+			assert.Equal(t, expected[rowStart-r][colStart+c], value)
+		}
+	}
+}
+
 func TestTetriminoSpawn(t *testing.T) {
-	t.Run("T tetrimino spawn at horizontally at 21 row", func(t *testing.T) {
+	t.Run("I tetrimino spawn at horizontally at 21 row", func(t *testing.T) {
 		// prepare
 		game := CreateGame()
 
@@ -74,7 +83,7 @@ func TestTetriminoSpawn(t *testing.T) {
 		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 6))
 		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 7))
 	})
-	t.Run("T tetrimino spawns but previous tetrimino at 20 and 19 row", func(t *testing.T) {
+	t.Run("I tetrimino spawns but previous tetrimino at 20 and 19 row", func(t *testing.T) {
 		// prepare
 		game := CreateGame()
 		game.SetPlayfield(20, 4, SHAPE_I)
@@ -101,7 +110,7 @@ func TestTetriminoSpawn(t *testing.T) {
 		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 6))
 		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 7))
 	})
-	t.Run("T tetrimino spawn but already occupied 21 row", func(t *testing.T) {
+	t.Run("I tetrimino spawn but already occupied 21 row", func(t *testing.T) {
 		// prepare
 		game := CreateGame()
 		game.SetPlayfield(21, 4, SHAPE_I)
@@ -263,5 +272,211 @@ func TestTetriminoDropByOne(t *testing.T) {
 		assert.Equal(t, SHAPE_I, game.GetPlayfield(1, 5))
 		assert.Equal(t, SHAPE_I, game.GetPlayfield(1, 6))
 		assert.Equal(t, SHAPE_I, game.GetPlayfield(1, 7))
+	})
+}
+
+func TestTetriminoRotate(t *testing.T) {
+	t.Run("rotate I shaped tetrimino by 90deg clockwise", func(t *testing.T) {
+		// prepare
+		game := CreateGame()
+		game.SpawnTetrimino(SHAPE_I)
+
+		//act
+		game.RotateTetriminoClockwise()
+
+		// assert
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(22, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(22, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(22, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(22, 7))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(21, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(21, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(21, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(21, 7))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(20, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(20, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(20, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(20, 7))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(19, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 7))
+	})
+	t.Run("rotate I shaped tetrimino by 180deg clockwise", func(t *testing.T) {
+		// prepare
+		game := CreateGame()
+		game.SpawnTetrimino(SHAPE_I)
+		game.RotateTetriminoClockwise()
+
+		//act
+		game.RotateTetriminoClockwise()
+
+		// assert
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(22, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(22, 5))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(22, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(22, 7))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(21, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(21, 5))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(21, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(21, 7))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(20, 4))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(20, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(20, 6))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(20, 7))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 5))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 7))
+	})
+	t.Run("rotate I shaped tetrimino by 270deg clockwise", func(t *testing.T) {
+		// prepare
+		game := CreateGame()
+		game.SpawnTetrimino(SHAPE_I)
+		game.RotateTetriminoClockwise()
+		game.RotateTetriminoClockwise()
+
+		//act
+		game.RotateTetriminoClockwise()
+
+		// assert
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(22, 4))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(22, 5))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(22, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(22, 7))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(21, 4))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(21, 5))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(21, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(21, 7))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(20, 4))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(20, 5))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(20, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(20, 7))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 4))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(19, 5))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 7))
+	})
+	t.Run("rotate I shaped tetrimino by 360deg clockwise", func(t *testing.T) {
+		// prepare
+		game := CreateGame()
+		game.SpawnTetrimino(SHAPE_I)
+		game.RotateTetriminoClockwise()
+		game.RotateTetriminoClockwise()
+		game.RotateTetriminoClockwise()
+
+		//act
+		game.RotateTetriminoClockwise()
+
+		// assert
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(22, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(22, 5))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(22, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(22, 7))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(21, 4))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(21, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(21, 6))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(21, 7))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(20, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(20, 5))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(20, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(20, 7))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 5))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 7))
+	})
+	t.Run("I shaped tetrimino rotated 90deg and drop by one", func(t *testing.T) {
+		// prepare
+		game := CreateGame()
+		game.SpawnTetrimino(SHAPE_I)
+		game.RotateTetriminoClockwise()
+
+		//act
+		game.DropByOne()
+
+		// assert
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(21, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(21, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(21, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(21, 7))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(20, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(20, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(20, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(20, 7))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(19, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(19, 7))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(18, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(18, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(18, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(18, 7))
+	})
+	t.Run("I shaped tetrimino rotated 90deg and drop till floor", func(t *testing.T) {
+		// prepare
+		game := CreateGame()
+		game.SpawnTetrimino(SHAPE_I)
+		game.RotateTetriminoClockwise()
+
+		//act
+		var got bool
+		for range 21 {
+			got = game.DropByOne()
+		}
+
+		// assert
+		assert.Equal(t, false, got)
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(4, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(4, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(4, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(4, 7))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(3, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(3, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(3, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(3, 7))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(2, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(2, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(2, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(2, 7))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(1, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(1, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(1, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(1, 7))
+	})
+	t.Run("I shaped tetrimino rotated 90deg and drop till another tetrimino", func(t *testing.T) {
+		// prepare
+		game := CreateGame()
+		game.SpawnTetrimino(SHAPE_I)
+		for range 21 {
+			game.DropByOne()
+		}
+		game.SpawnTetrimino(SHAPE_I)
+		game.RotateTetriminoClockwise()
+
+		//act
+		var got bool
+		for range 21 {
+			got = game.DropByOne()
+		}
+
+		// assert
+		assert.Equal(t, false, got)
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(5, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(5, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(5, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(5, 7))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(4, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(4, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(4, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(4, 7))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(3, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(3, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(3, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(3, 7))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(2, 4))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(2, 5))
+		assert.Equal(t, SHAPE_I, game.GetPlayfield(2, 6))
+		assert.Equal(t, BLANK_ID, game.GetPlayfield(2, 7))
 	})
 }

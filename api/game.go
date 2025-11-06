@@ -30,6 +30,7 @@ func createTetrimino(shape string) TetriminoInterface {
 type TetriminoInterface interface {
 	Spawn(*matrix.ReverseMatrix, string) bool
 	DropByOne(*matrix.ReverseMatrix, string) bool
+	Rotate(*matrix.ReverseMatrix, string) bool
 }
 
 type Game struct {
@@ -91,4 +92,12 @@ func (g *Game) DropByOne() bool {
 	}
 
 	return droppable
+}
+
+func (g *Game) DropTetriminoToGround() {
+
+}
+
+func (g *Game) RotateTetriminoClockwise() {
+	g.spawned.Rotate(g.playfield, BLANK_ID)
 }
